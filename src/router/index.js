@@ -14,6 +14,7 @@ import ProjectTasks from "../components/projects/ProjectTasks.vue"
 import Task from "../components/tasks/Task.vue"
 import Project from "../components/projects/Project.vue"
 import Register from "../components/auth/Register.vue"
+import Products from "../components/products/Products.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,35 @@ const router = createRouter({
       name: 'Login',
       component: Login
     },
+
+    {
+      path: '/products',
+      name: 'HotDishes',
+      component: Products,
+      props: { type: "hot dish", }
+    },
+
+    {
+      path: '/products',
+      name: 'ColdDishes',
+      component: Products,
+      props: { type: "cold dish", }
+    },
+
+    {
+      path: '/products',
+      name: 'Drinks',
+      component: Products,
+      props: { type: "drink", }
+    },
+
+    {
+      path: '/products',
+      name: 'Deserts',
+      component: Products,
+      props: { type: "dessert", }
+    },
+
     {
       path: '/register',
       name: 'Register',
@@ -134,10 +164,6 @@ router.beforeEach(async (to, from, next) => {
   }
   if ((to.name == 'Login') || (to.name == 'home') || (to.name == 'Register')){
     next()
-    return
-  }
-  if (!userStore.user) {
-    next({ name: 'Login' })
     return
   }
   if (to.name == 'Reports') {
