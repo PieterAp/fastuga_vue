@@ -18,7 +18,6 @@
 
   const register = async () => {
     if (await userStore.register(credentials.value)) {
-      console.log(userStore.user)
       toast.success('User successfully registered in the application.')
       emit('register')
       router.push({name : 'Login'})
