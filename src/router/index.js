@@ -15,6 +15,7 @@ import Task from "../components/tasks/Task.vue"
 import Project from "../components/projects/Project.vue"
 import Register from "../components/auth/Register.vue"
 import Products from "../components/products/Products.vue"
+import Cart from "../components/cart/ShoppingCart.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,7 +30,11 @@ const router = createRouter({
       name: 'Login',
       component: Login
     },
-
+    {
+      path: '/shoppingcart',
+      name: 'ShoppingCart',
+      component: Cart
+    },
     {
       path: '/products',
       name: 'HotDishes',

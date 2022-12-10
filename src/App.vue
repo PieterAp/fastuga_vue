@@ -3,11 +3,13 @@ import { useRouter, RouterLink, RouterView } from "vue-router"
 import { ref, inject } from "vue"
 import { useUserStore } from "./stores/user.js"
 import { useProjectsStore } from "./stores/projects.js"
+import { useCartStore } from "./stores/cart.js"
 
 const router = useRouter()
 const toast = inject("toast")
 const userStore = useUserStore()
 const projectsStore = useProjectsStore()
+const cartStore = useCartStore()
 
 const buttonSidebarExpand = ref(null)
 
@@ -27,6 +29,8 @@ const clickMenuOption = () => {
   }
 }
 
+
+
 </script>
 
 <template>
@@ -41,9 +45,18 @@ const clickMenuOption = () => {
         aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
+          <li class="nav-item">
+             <!--TODO  Fix button style-->
+            <router-link class="nav-link" :class="{ active: $route.name === 'ShoppingCart' }" :to="{ name: 'ShoppingCart' }"
+              @click="clickMenuOption">
+              <button type="button" class="btn btn-primary">
+                <i class="bi bi-cart"></i>
+                {{cartStore?.totalItems}}
+              </button>
+            </router-link>
+          </li>
           <li class="nav-item" v-show="!userStore.user">
             <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
               @click="clickMenuOption">
@@ -128,15 +141,6 @@ const clickMenuOption = () => {
               </router-link>
             </li>
           </ul>
-
-          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
-            v-if="userStore.user">
-            <span>My Projects</span>
-            <router-link class="link-secondary" :to="{ name: 'NewProject' }" aria-label="Add a new project"
-              @click="clickMenuOption">
-              <i class="bi bi-xs bi-plus-circle"></i>
-            </router-link>
-          </h6>
           <ul class="nav flex-column mb-2">
             <li class="nav-item" v-for="prj in projectsStore.myInprogressProjects" :key="prj.id">
               <router-link class="nav-link w-100 me-3" :class="{
@@ -153,6 +157,15 @@ const clickMenuOption = () => {
               <span>User</span>
             </h6>
             <ul class="nav flex-column mb-2">
+              <li class="nav-item" v-show="!userStore.user">
+                <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
+                  @click="clickMenuOption">
+                  <button type="button" class="btn btn-primary">
+                    <i class="bi bi-cart"></i>
+                    {{ 0 }}
+                  </button>
+                </router-link>
+              </li>
               <li class="nav-item" v-show="!userStore.user">
                 <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
                   @click="clickMenuOption">

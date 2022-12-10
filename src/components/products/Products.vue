@@ -2,9 +2,12 @@
 import { ref, inject, onMounted, computed } from 'vue'
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
+import { useCartStore } from "../../stores/cart.js"
+
 const axios = inject('axios')
 const products = ref(null)
 const serverBaseUrl = inject('serverBaseUrl')
+const cartStore = useCartStore()
 
 const props = defineProps({
   type: {
@@ -28,6 +31,10 @@ async function loadProducts() {
   }
 }
 
+function insertItem(product){
+  cartStore.insertItem(product)
+}
+
 onMounted(() => {
   loadProducts()
 })
@@ -41,6 +48,7 @@ onMounted(() => {
     </div>
   </div>
   <hr>
+   <!--TODO  fix deformat cards-->
   <div class="row">
     <div v-for="product in products?.filter(t =>props.type == t.type)" class="col-md-3 col-sm-6 col-xs-12">
       <div class="card">
@@ -49,7 +57,7 @@ onMounted(() => {
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">{{ product.description }}</p>
           <p class="card-text">{{ product.price + "€" }}</p>
-          <a href="#" class="btn btn-primary">Add</a>
+          <button  @click="insertItem(product)" class="btn btn-primary">Add</button>
         </div>
       </div>
     </div>
