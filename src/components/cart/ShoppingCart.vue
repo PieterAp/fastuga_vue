@@ -22,6 +22,10 @@ function getItems() {
   }
 }
 
+function deleteItem(item) {
+  cartStore.deleteItem(item)
+}
+
 onMounted(() => {
   getItems()
 })
@@ -45,7 +49,7 @@ onMounted(() => {
                           class="img-fluid" style="width: 150px;" alt="Generic placeholder image">
                       </div>
                       <div class="flex-grow-1 ms-3">
-                        <a href="#!" class="float-end text-black"><i class="bi bi-x"></i></a>
+                        <a style="cursor:pointer" @click="deleteItem(item)" class="float-end text-black"><i class="bi bi-x"></i></a>
                         <h5 class="text-primary">{{item.name}}</h5>
                         <h6 style="color: #9e9e9e;">{{item.description}}</h6>
                         <div class="d-flex align-items-center">

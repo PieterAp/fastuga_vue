@@ -29,8 +29,6 @@ const clickMenuOption = () => {
   }
 }
 
-
-
 </script>
 
 <template>
@@ -129,7 +127,7 @@ const clickMenuOption = () => {
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'Drinks' }" :to="{ name: 'Drinks' }"
                 @click="clickMenuOption">
-                <i class="bi bi-people"></i>
+                <i class="bi bi-cup-straw"></i>
                 Drinks
               </router-link>
             </li>
@@ -138,6 +136,14 @@ const clickMenuOption = () => {
                 @click="clickMenuOption">
                 <i class="bi bi-bar-chart-line"></i>
                 Desserts
+              </router-link>
+            </li>
+            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+              <hr>
+              <router-link class="nav-link" :class="{ active: $route.name === 'Products' }" :to="{ name: 'Products' }"
+                @click="clickMenuOption">
+                <i class="bi bi-bar-chart-line"></i>
+                Products
               </router-link>
             </li>
           </ul>
@@ -151,7 +157,6 @@ const clickMenuOption = () => {
               </router-link>
             </li>
           </ul>
-
           <div class="d-block d-md-none">
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
               <span>User</span>
@@ -215,7 +220,6 @@ const clickMenuOption = () => {
           </div>
         </div>
       </nav>
-
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <router-view></router-view>
       </main>

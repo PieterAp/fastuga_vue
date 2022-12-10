@@ -26,8 +26,7 @@ export const useCartStore = defineStore('cart', () => {
 
 
     function insertItem(newItem) {
-        items.value.push(newItem)
-        console.log(items.value)
+        items.value.push(newItem)  
     }
 
     function deleteItem(deleteItem) {

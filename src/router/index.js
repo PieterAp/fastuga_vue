@@ -14,8 +14,9 @@ import ProjectTasks from "../components/projects/ProjectTasks.vue"
 import Task from "../components/tasks/Task.vue"
 import Project from "../components/projects/Project.vue"
 import Register from "../components/auth/Register.vue"
-import Products from "../components/products/Products.vue"
+import Menu from "../components/products/Menu.vue"
 import Cart from "../components/cart/ShoppingCart.vue"
+import Products from "../components/products/Products.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,31 +36,38 @@ const router = createRouter({
       name: 'ShoppingCart',
       component: Cart
     },
+
     {
       path: '/products',
-      name: 'HotDishes',
+      name: 'Products',
       component: Products,
+    },
+
+    {
+      path: '/menu',
+      name: 'HotDishes',
+      component: Menu,
       props: { type: "hot dish", }
     },
 
     {
-      path: '/products',
+      path: '/menu',
       name: 'ColdDishes',
-      component: Products,
+      component: Menu,
       props: { type: "cold dish", }
     },
 
     {
-      path: '/products',
+      path: '/menu',
       name: 'Drinks',
-      component: Products,
+      component: Menu,
       props: { type: "drink", }
     },
 
     {
-      path: '/products',
+      path: '/menu',
       name: 'Deserts',
-      component: Products,
+      component: Menu,
       props: { type: "dessert", }
     },
 

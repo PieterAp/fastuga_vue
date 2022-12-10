@@ -1,39 +1,44 @@
 <script setup>
-import { ref, inject, onMounted, computed } from 'vue'
-import avatarNoneUrl from '@/assets/avatar-none.png'
+import { ref, computed, onMounted ,inject} from 'vue'
+import ProductTable from "./ProductsTable.vue"
+import { useProductsStore } from "../../stores/products.js"
 
-import { useCartStore } from "../../stores/cart.js"
+const productsStore = useProductsStore()
+const productToDelete = ref(null)
+const deleteConfirmationDialog = ref(null)  
+const toast = inject("toast")
 
-const axios = inject('axios')
-const products = ref(null)
-const serverBaseUrl = inject('serverBaseUrl')
-const cartStore = useCartStore()
+const loadProducts = () => {
+  productsStore.loadProducts()
+    .catch((error) => {
+      console.log(error)
+    })
+}
 
-const props = defineProps({
-  type: {
-    type: String
-  },
-})
-
-function productPhotoUrl(product) {
-  if (!product?.photo_url) {
-    return avatarNoneUrl
+const deleteProductConfirmed = () => {
+    productsStore.deleteProduct(productToDelete.value)
+      .then((deletedProduct) => {
+        toast.info("Product " + deletedProduct.name + " was deleted")
+      })
+      .catch(() => {
+        toast.error("It was not possible to delete Product " + productToDeleteName.value + "!")
+      })
   }
-  return serverBaseUrl + '/storage/products/' + product?.photo_url
+
+const productToDeleteName = computed(() => {
+    return productToDelete.value
+    ? `#${productToDelete.value.id} (${productToDelete.value.name})`
+    : ""
+  })
+
+const clickToDeleteProduct = (product) => {
+  productToDelete.value = product
+  deleteConfirmationDialog.value.show()
 }
 
-async function loadProducts() {
-  try {
-    const response = await axios.get('products')
-    products.value = response.data.data
-  } catch (error) {
-    throw error
-  }
-}
-
-function insertItem(product){
-  cartStore.insertItem(product)
-}
+const Products = computed(()=>{
+    return productsStore.getProducts()
+  })
 
 onMounted(() => {
   loadProducts()
@@ -42,49 +47,35 @@ onMounted(() => {
 </script>
 
 <template>
+  <confirmation-dialog
+    ref="deleteConfirmationDialog"
+    confirmationBtn="Delete Product"
+    :msg="`Do you really want to delete the product ${productToDeleteName}?`"
+    @confirmed="deleteProductConfirmed"
+  >
+  </confirmation-dialog>
   <div class="d-flex justify-content-between">
     <div class="mx-2">
       <h3 class="mt-4">Products</h3>
     </div>
-  </div>
-  <hr>
-   <!--TODO  fix deformat cards-->
-  <div class="row">
-    <div v-for="product in products?.filter(t =>props.type == t.type)" class="col-md-3 col-sm-6 col-xs-12">
-      <div class="card">
-        <img :src="productPhotoUrl(product)" class="card-img-top">
-        <div class="card-body">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text">{{ product.description }}</p>
-          <p class="card-text">{{ product.price + "€" }}</p>
-          <button  @click="insertItem(product)" class="btn btn-primary">Add</button>
-        </div>
-      </div>
+    <div class="mx-2 total-filtro">
+      <h5 class="mt-4">Total: {{ productsStore?.totalProducts }}</h5>
     </div>
   </div>
-
+  <hr>
+  <div class="mb-3 d-flex justify-content-between flex-wrap">
+    <div class="mx-2 mt-2">
+      <button type="button" class="btn btn-success px-4 btn-addprj" @click="addProduct"><i
+          class="bi bi-xs bi-plus-circle"></i>&nbsp; Add Product</button>
+    </div>
+  </div>
+  <product-table 
+    :products="Products"
+    @delete="clickToDeleteProduct">
+  </product-table>
 </template>
 
 <style scoped>
-.card-img-top {
-  width: 100%;
-  height: 15vw;
-  object-fit: cover;
-}
-
-.card {
-  width: 18rem;
-  margin-bottom: 5rem;
-}
-
-.filter-div {
-  min-width: 12rem;
-}
-
-.total-filtro {
-  margin-top: 0.35rem;
-}
-
 .btn-addprj {
   margin-top: 1.85rem;
 }
