@@ -51,7 +51,7 @@ onMounted(() => {
   <hr>
    <!--TODO  fix deformat cards-->
   <div class="row">
-    <div v-for="product in products?.filter(t =>props.type == t.type)" class="col-md-3 col-sm-6 col-xs-12">
+    <div v-for="product in products?.filter(t =>props.type == t.type && !t.deleted_at)" class="col-md-3 col-sm-6 col-xs-12">
       <div style="cursor:pointer" class="card" @click="insertItem(product)">
         <img :src="productPhotoUrl(product)" class="card-img-top">
         <div class="card-body">

@@ -28,10 +28,10 @@
     </thead>
     <tbody>
       <tr
-        v-for="product in products"
-        :key="product.id">
+        v-for="product in products?.sort((a, b) => b.type.localeCompare(a.type) || a.price.localeCompare(b.price))"
+        :key="product.id" :class="{ completed: product.deleted_at }">
         <td>{{ product.name }}</td>
-        <td>{{ product.type }}</td>
+        <td>{{ product.type.toUpperCase()}}</td>
         <td>{{ product.price+"€"}}</td>
         <td
           class="text-end">
@@ -42,9 +42,16 @@
             ><i class="bi bi-xs bi-pencil"></i>
             </button>
             <button
+              v-if="!product.deleted_at"
               class="btn btn-xs btn-light"
               @click="deleteClick(product)" 
             ><i class="bi bi-xs bi-x-square-fill"></i>
+            </button>
+            <button
+              v-if="product.deleted_at"
+              class="btn btn-xs btn-light"            
+              @click="deleteClick(product)" 
+            ><i class="bi bi-xs bi-check-square-fill"></i>
             </button>
           </div>
         </td>
@@ -54,8 +61,14 @@
 </template>
 
 <style scoped>
+
 button {
   margin-left: 3px;
   margin-right: 3px;
 }
+
+.completed {
+  color: red;
+}
+
 </style>
