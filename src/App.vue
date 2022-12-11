@@ -113,7 +113,7 @@ const clickMenuOption = () => {
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'HotDishes' }" :to="{ name: 'HotDishes' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-stars"></i>
+                <i class="bi bi-fire"></i>
                 Hot Dishes
               </router-link>
             </li>
@@ -134,7 +134,7 @@ const clickMenuOption = () => {
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'Deserts' }" :to="{ name: 'Deserts' }"
                 @click="clickMenuOption">
-                <i class="bi bi-bar-chart-line"></i>
+                <i class="bi bi-cup-straw"></i>
                 Desserts
               </router-link>
             </li>
@@ -142,7 +142,7 @@ const clickMenuOption = () => {
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Products' }" :to="{ name: 'Products' }"
                 @click="clickMenuOption">
-                <i class="bi bi-bar-chart-line"></i>
+                <i class="bi bi-list-ul"></i>                                   
                 Products
               </router-link>
             </li>
