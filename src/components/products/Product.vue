@@ -1,0 +1,147 @@
+<script setup>
+  import { ref, watch, computed, onMounted, inject } from 'vue'
+  import { useRouter, onBeforeRouteLeave } from 'vue-router'
+import ProductDetail from './ProductDetail.vue';
+
+const router = useRouter()
+const axios = inject('axios')
+
+const newProduct = () => {
+      return {
+        id: null,
+        name: '',
+        description: '',
+        photo_url: '',
+        price: '',
+        custom: '',
+        created_at: '',
+        updated_at:'',
+        deleted_at: null
+      }
+  }
+
+  let originalValueStr = ''
+  const loadProcuct = (id) => {
+      originalValueStr = ''
+      errors.value = null
+      if (!id || (id < 0)) {
+        product.value = newProduct()
+        originalValueStr = dataAsString()
+      } else {
+        axios.get('products/' + id)
+          .then((response) => {
+            product.value = response.data.data
+            originalValueStr = dataAsString()
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+  }
+
+  const save = () => {
+      errors.value = null
+      if (operation.value == 'insert') {
+        axios.post('products', product.value)
+          .then((response) => {
+            product.value = response.data.data
+            originalValueStr = dataAsString()
+            //toast.success('Task #' + task.value.id + ' was created successfully.')
+            router.back()
+          })
+          .catch((error) => {
+            if (error.response.status == 422) {
+              //toast.error('Task was not created due to validation errors!')
+              errors.value = error.response.data.errors
+            } else {
+              errors.value = error.response.data.errors
+              //toast.error('Task was not created due to unknown server error!')
+            }
+          })
+      } else {
+        
+        axios.put('products/' + props.id, product.value)
+          .then((response) => {
+            product.value = response.data.data
+            originalValueStr = dataAsString()
+            //toast.success('Task #' + task.value.id + ' was updated successfully.')
+            router.back()
+          })
+          .catch((error) => {
+            if (error.response.status == 422) {
+              //toast.error('Task #' + props.id + ' was not updated due to validation errors!')
+              errors.value = error.response.data.errors
+            } else {
+              errors.value = error.response.data.errors
+              //toast.error('Task #' + props.id + ' was not updated due to unknown server error!')
+            }
+          })
+      }
+    }
+
+    const cancel = () => {
+    originalValueStr = dataAsString()
+    router.back()
+  }
+
+  const dataAsString = () => {
+      return JSON.stringify(product.value)
+  }
+
+  let nextCallBack = null
+  const leaveConfirmed = () => {
+      if (nextCallBack) {
+        nextCallBack()
+      }
+  }
+
+  onBeforeRouteLeave((to, from, next) => {
+    nextCallBack = null
+    let newValueStr = dataAsString()
+    if (originalValueStr != newValueStr) {
+      nextCallBack = next
+      //confirmationLeaveDialog.value.show()
+    } else {
+      next()
+    }
+  })  
+
+const props = defineProps({
+  id:{
+    type: Number,
+    default:null
+  }
+})
+
+const product= ref(newProduct())
+const errors = ref(null)
+const confirmationLeaveDialog = ref(null)
+
+const operation = computed( () => (!props.id || props.id < 0) ? 'insert' : 'update')
+
+watch(
+    () => props.id,
+    (newValue) => {
+        loadProcuct(newValue)
+      }, 
+    { immediate: true}
+  )
+
+
+
+</script>
+
+<template>
+
+<ProductDetail
+:operation-type="operation"
+:product="product"
+:errors="errors"
+@save="save"
+@cancel="cancel">
+</ProductDetail>
+</template>
+
+<style>
+
+</style>

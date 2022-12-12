@@ -17,7 +17,7 @@ import Register from "../components/auth/Register.vue"
 import Menu from "../components/products/Menu.vue"
 import Cart from "../components/cart/ShoppingCart.vue"
 import Products from "../components/products/Products.vue"
-
+import Product from "../components/products/Product.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -41,6 +41,12 @@ const router = createRouter({
       path: '/products',
       name: 'Products',
       component: Products,
+    },
+    {
+      path: '/products/new',
+      name: 'NewProduct',
+      component: Product,
+      props: { id: -1 }
     },
 
     {

@@ -2,6 +2,8 @@
 import { ref, computed, onMounted ,inject} from 'vue'
 import ProductTable from "./ProductsTable.vue"
 import { useProductsStore } from "../../stores/products.js"
+import {useRouter } from "vue-router";
+const router = useRouter()
 
 const productsStore = useProductsStore()
 const productToDelete = ref(null)
@@ -39,6 +41,10 @@ const clickToDeleteProduct = (product) => {
 const Products = computed(()=>{
     return productsStore.getProducts()
   })
+
+  const addProduct = () => {
+  router.push({ name : 'NewProduct'})
+}
 
 onMounted(() => {
   loadProducts()
