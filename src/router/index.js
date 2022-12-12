@@ -191,6 +191,16 @@ router.beforeEach(async (to, from, next) => {
       return
     }
   }
+  if (to.name == 'NewProduct') {
+    if (userStore.user.type == 'EM') {
+      next()
+      return
+    }else{
+      back()
+      return
+    }
+  }
+  
   if (to.name == 'User') {
     if ((userStore.user.type == 'A') || (userStore.user.id == to.params.id)) {
       next()

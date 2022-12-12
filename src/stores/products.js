@@ -36,10 +36,6 @@ export const useProductsStore = defineStore('products', () => {
 
     async function deleteProduct(deleteProduct) {
         const response = await axios.delete('products/' + deleteProduct.id)
-        let idx = products.value.findIndex((t) => t.id === response.data.data.id)
-        if (idx >= 0) {
-            products.value.splice(idx, 1)
-        }
         return response.data.data
     } 
 
