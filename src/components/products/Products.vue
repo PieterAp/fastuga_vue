@@ -46,6 +46,10 @@ const Products = computed(()=>{
   router.push({ name : 'NewProduct'})
 }
 
+const editProduct = (product) => {
+    router.push({ name: 'Product', params: { id: product.id } })
+  }
+
 onMounted(() => {
   loadProducts()
 })
@@ -77,6 +81,7 @@ onMounted(() => {
   </div>
   <product-table 
     :products="Products"
+    @edit="editProduct"
     @delete="clickToDeleteProduct">
   </product-table>
 </template>
