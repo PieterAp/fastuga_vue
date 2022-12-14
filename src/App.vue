@@ -146,6 +146,21 @@ const clickMenuOption = () => {
                 Products
               </router-link>
             </li>
+            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+              <router-link class="nav-link" :class="{ active: $route.name === 'Users' }" :to="{ name: 'Users' }"
+                @click="clickMenuOption">
+                <i class="bi bi-list-ul"></i>                                   
+                Users
+              </router-link>
+            </li>
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
+              <hr>
+              <router-link class="nav-link" :class="{ active: $route.name === 'Board' }" :to="{ name: 'Board' }"
+                @click="clickMenuOption">
+                <i class="bi bi-list-ul"></i>                                   
+                Public Board
+              </router-link>
+            </li>
           </ul>
           <ul class="nav flex-column mb-2">
             <li class="nav-item" v-for="prj in projectsStore.myInprogressProjects" :key="prj.id">

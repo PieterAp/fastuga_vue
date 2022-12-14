@@ -19,7 +19,8 @@
         id: null,
         name: '',
         email: '',
-        gender: 'M',
+        password:'',
+        type:'',
         photo_url: null
       }
   }

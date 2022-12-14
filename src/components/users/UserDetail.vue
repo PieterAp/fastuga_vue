@@ -60,7 +60,6 @@ const cancel = () => {
           />
           <field-error-message :errors="errors" fieldName="name"></field-error-message>
         </div>
-
         <div class="mb-3 px-1">
           <label for="inputEmail" class="form-label">Email</label>
           <input
@@ -73,50 +72,28 @@ const cancel = () => {
           />
           <field-error-message :errors="errors" fieldName="email"></field-error-message>
         </div>
-        <div class="d-flex ms-1 mt-4 flex-wrap justify-content-between">
-          <div class="mb-3 me-3 flex-grow-1">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                true-value="A"
-                false-value="M"
-                v-model="editingUser.type"
-                id="inputType"
-              />
-              <label class="form-check-label" for="inputType">
-                User is Administrator
-              </label>
-              <field-error-message :errors="errors" fieldName="type"></field-error-message>
-            </div>
-          </div>
-          <div class="mb-3 ms-xs-3 flex-grow-1">
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="radioGender"
-                value="M"
-                required
-                v-model="editingUser.gender"
-                id="inputGenderM"
-              />
-              <label class="form-check-label" for="inputGenderM">Masculino</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="radioGender"
-                value="F"
-                v-model="editingUser.gender"
-                id="inputGenderF"
-              />
-              <label class="form-check-label" for="inputGenderF">Feminino</label>
-            </div>
-            <field-error-message :errors="errors" fieldName="gender"></field-error-message>
-          </div>
+        <div class="mb-3">
+          <label for="inputName" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="inputPassword"
+            placeholder="Password"
+            required
+            v-model="editingUser.password"
+          />
+          <field-error-message :errors="errors" fieldName="password"></field-error-message>
         </div>
+        <div class=" flex-wrap justify-content-between">
+      <label for="name" class="col-sm-2 col-form-label">Type</label>
+      <div class="col-sm-10">
+        <select class="form-select" id="type" v-model="editingUser.type">
+          <option value="EM">Manager</option>
+          <option value="EC">CHEF</option>
+          <option value="ED">DELIVERY</option>
+        </select>
+      </div>
+    </div>
       </div>
       <div class="w-25">
         <div class="mb-3">
