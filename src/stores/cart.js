@@ -13,7 +13,8 @@ export const useCartStore = defineStore('cart', () => {
         items.value.forEach(val => {
             total += Number(val.price);
         });
-        return total
+        //2 decimals cases
+        return total.toFixed(2)
     })
 
     function clearCart() {

@@ -53,7 +53,6 @@ onMounted(() => {
                         <h5 class="text-primary">{{item.name}}</h5>
                         <h6 style="color: #9e9e9e;">{{item.description}}</h6>
                         <div class="d-flex align-items-center">
-                           <!--TODO  fix decimal cases-->
                           <p class="fw-bold mb-0 me-5 pe-3">{{item.price+"€"}}</p>                  
                         </div>
                       </div>
