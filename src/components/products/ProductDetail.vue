@@ -106,7 +106,7 @@ const datecomp = computed(() => {
     </div>
     <label for="photo_url" class="col-sm-2 col-form-label">Photo</label>
       <div class="custom-file" >
-        <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" v-on:change="onFileChange">
+        <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" @change="onFileChange">
       </div>
     <label for="price" class="col-sm-2 col-form-label">Price</label>
     <div class="col-sm-10 ">
