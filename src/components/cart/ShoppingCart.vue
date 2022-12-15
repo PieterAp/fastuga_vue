@@ -2,6 +2,7 @@
 import { ref, onMounted , inject } from 'vue'
 import { useCartStore } from "../../stores/cart.js"
 import avatarNoneUrl from '@/assets/avatar-none.png'
+import { RouterLink } from 'vue-router'
 
 const serverBaseUrl = inject('serverBaseUrl')
 const cartStore = useCartStore()
@@ -101,8 +102,7 @@ onMounted(() => {
                         href="#!">obcaecati sapiente</a>.</p>
                     <button type="button" class="btn btn-primary btn-block btn-lg">Buy now</button>
                     <h5 class="fw-bold mb-5" style="position: absolute; bottom: 0;">
-                      <!--TODO  GO BACK-->
-                      <a href="#!"><i class="fas fa-angle-left me-2"></i>Back to shopping</a>
+                      <router-link to="/menu"><i class="fas fa-angle-left me-2"></i>Back to shopping</router-link>
                     </h5>
                   </form>
                 </div>
