@@ -6,9 +6,10 @@ import { useProjectsStore } from "./projects.js"
 export const useUserStore = defineStore('user', () => {
     const projectsStore = useProjectsStore()
     const axios = inject('axios')
+    const socket = inject("socket")
     const serverBaseUrl = inject('serverBaseUrl')
-
     const user = ref(null)
+    const toast = inject('toast')
 
     const userPhotoUrl = computed(() => {
         if (!user.value?.photo_url) {
@@ -43,6 +44,7 @@ export const useUserStore = defineStore('user', () => {
             axios.defaults.headers.common.Authorization = "Bearer " + response.data.access_token
             sessionStorage.setItem('token', response.data.access_token)
             await loadUser()
+            socket.emit('loggedIn', user.value)
             //await projectsStore.loadProjects()
             return true
         }
@@ -98,6 +100,16 @@ export const useUserStore = defineStore('user', () => {
         clearUser()
         return false
     }
+
+    socket.on('updateUser', (updatedUser) => {
+        //console.log('Someone else has updated the user #' + updatedUser.id)
+        if (user.value?.id == updatedUser.id) {
+            user.value = updatedUser
+            toast.info('Your user profile has been changed!')
+        } else {
+            toast.info(`User profile #${updatedUser.id} (${updatedUser.name}) has changed!`)
+        }
+    }) 
 
     return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken }
 })

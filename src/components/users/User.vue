@@ -5,6 +5,7 @@
   
   const router = useRouter()  
   const axios = inject('axios')
+  const socket = inject("socket")
   const toast = inject('toast')
 
   const props = defineProps({
@@ -49,6 +50,7 @@
       axios.put('users/' + props.id, user.value)
         .then((response) => {
           user.value = response.data.data
+          socket.emit('updateUser', user.value)
           originalValueStr = dataAsString()
           toast.success('User #' + user.value.id + ' was updated successfully.')
           router.back()

@@ -59,7 +59,7 @@ const editClick = (user) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="user in users.filter(t => t.id!=userStore.user?.id)" :key="user.id">
+      <tr v-for="user in users.sort((a, b) => b.type.localeCompare(a.type)).filter(t => t.id!=userStore.user?.id && t.type!='EM')" :key="user.id">
         <td v-if="showId" class="align-middle">{{ user.id }}</td>
         <td v-if="showPhoto" class="align-middle">
           <img :src="photoFullUrl(user)" class="rounded-circle img_photo" />
