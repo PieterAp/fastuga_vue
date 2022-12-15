@@ -46,7 +46,6 @@ const clickMenuOption = () => {
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-             <!--TODO  Fix button style-->
             <router-link class="nav-link" :class="{ active: $route.name === 'ShoppingCart' }" :to="{ name: 'ShoppingCart' }"
               @click="clickMenuOption">
               <button type="button" class="btn btn-primary">
