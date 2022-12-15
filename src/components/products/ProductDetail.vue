@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, watch } from "vue"
+import { ref, computed, watch, inject } from "vue"
+import avatarNoneUrl from '@/assets/avatar-none.png'
 
-
+const serverBaseUrl = inject("serverBaseUrl");
 const props = defineProps({
   product: {
     type: Object,
@@ -17,15 +18,32 @@ const props = defineProps({
   },
 })
 
+
+const filename = ref(null)
+const file = ref(null)
+
+
+const onFileChange = (e) => {
+  filename.value = "Selected File: " + e.target.files[0].name;
+  file.value = e.target.files[0];
+  editingProduct.value.photo = file;
+}
+
+
 const emit = defineEmits(["save", "cancel"]);
 
 const editingProduct = ref(props.product);
-
 
 watch(() => props.product, (newProduct) => {
   editingProduct.value = newProduct;
 }
 );
+
+const photoFullUrl = computed(() => {
+  return editingProduct.value.photo_url
+    ? serverBaseUrl + "/storage/products/" + editingProduct.value.photo_url
+    : avatarNoneUrl
+})
 
 const productTitle = computed(() => {
   if (!editingProduct.value) {
@@ -47,11 +65,9 @@ const datecomp = computed(() => {
   return s
 })
 
-
 </script>
 
 <template>
-
   <form class="row g-3 needs-validation" novalidate @submit.prevent="save">
     <h3 class="mt-5 mb-3">{{ productTitle }}</h3>
     <hr />
@@ -78,11 +94,20 @@ const datecomp = computed(() => {
       <textarea type="text" class="form-control" id="description" placeholder="Description of product"
         v-model="editingProduct.description"></textarea>
     </div>
-    <label for="photo_url" class="col-sm-2 col-form-label">Photo Url</label>
-    <div class="col-sm-10 ">
-      <input type="text" class="form-control" id="photo_url" placeholder="Url of photo"
-        v-model="editingProduct.photo_url" />
+    <div class="col-sm-10 " v-if="editingProduct?.photo_url">
+      <label for="photo_url" class="col-sm-2 col-form-label">Photo</label>
+      <div class="w-25">
+        <div class="mb-3">
+          <div class="form-control text-center">
+            <img :src="photoFullUrl" class="w-100" />
+          </div>
+        </div>
+      </div>
     </div>
+    <label for="photo_url" class="col-sm-2 col-form-label">Photo</label>
+      <div class="custom-file" >
+        <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" v-on:change="onFileChange">
+      </div>
     <label for="price" class="col-sm-2 col-form-label">Price</label>
     <div class="col-sm-10 ">
       <input type="text" class="form-control" id="price" placeholder="Price of product"
@@ -95,6 +120,4 @@ const datecomp = computed(() => {
       <button type="button" class="btn btn-light px-5" @click="cancel">Cancel</button>
     </div>
   </form>
-
-
 </template>
