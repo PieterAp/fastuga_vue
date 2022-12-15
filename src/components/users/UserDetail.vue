@@ -72,6 +72,18 @@ const cancel = () => {
           />
           <field-error-message :errors="errors" fieldName="email"></field-error-message>
         </div>
+        <div class="mb-3" v-if="!props.user.id">
+          <label for="inputName" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="inputPassword"
+            placeholder="Password"
+            required
+            v-model="editingUser.password"
+          />
+          <field-error-message :errors="errors" fieldName="password"></field-error-message>
+        </div>
         <div class=" flex-wrap justify-content-between">
       <label for="name" class="col-sm-2 col-form-label">Type</label>
       <div class="col-sm-10">

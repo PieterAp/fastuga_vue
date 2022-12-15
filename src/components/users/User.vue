@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch, inject } from 'vue'
+  import { ref, computed, watch, inject } from 'vue'
   import UserDetail from "./UserDetail.vue"
   import { useRouter, onBeforeRouteLeave } from 'vue-router'  
   
@@ -47,7 +47,27 @@
 
   const save = () => {
       errors.value = null
-      axios.put('users/' + props.id, user.value)
+      if(operation.value == 'insert'){
+        axios.post('user', user.value)
+          .then((response) => {
+            
+            user.value = response.data.data
+            
+            originalValueStr = dataAsString()
+            toast.success('Task #' + task.value.id + ' was created successfully.')
+            router.back()
+          })
+          .catch((error) => {
+            if (error.response.status == 422) {
+              //toast.error('Task was not created due to validation errors!')
+              errors.value = error.response.data.errors
+            } else {
+              errors.value = error.response.data.errors
+              //toast.error('Task was not created due to unknown server error!')
+            }
+          })
+      }else{
+        axios.put('users/' + props.id, user.value)
         .then((response) => {
           user.value = response.data.data
           socket.emit('updateUser', user.value)
@@ -63,6 +83,8 @@
               toast.error('User #' + props.id + ' was not updated due to unknown server error!')
             }
         })
+      }
+      
   }
 
   const cancel = () => {
@@ -95,6 +117,7 @@
   const user = ref(newUser())
   const errors = ref(null)
   const confirmationLeaveDialog = ref(null)
+  const operation = computed( () => (!props.id || props.id < 0) ? 'insert' : 'update')
 
   watch(
     () => props.id,
@@ -116,6 +139,7 @@
   </confirmation-dialog>  
 
   <user-detail
+    :operation-type="operation"
     :user="user"
     :errors="errors"
     @save="save"
