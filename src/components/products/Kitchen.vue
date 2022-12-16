@@ -70,10 +70,13 @@ function compare(a, b) {
 }
 
 
-socket.on('updateItem', (item) => {
-
-  toast.info("Dish " + item.value.product_name + " from ticket #" + item.value.order_ticket_number + " is now assigned " + item.preparation_by)
-
+socket.on('updateItem', (newItem) => {
+  console.log(newItem)
+  let idx = items.value.findIndex((t) => t.id === newItem.id)
+  if (idx >= 0) {
+    items.value[idx] = newItem
+  }
+  toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned " + newItem.preparation_by)
 })
 
 onMounted(() => {
