@@ -160,14 +160,11 @@ const clickMenuOption = () => {
                 Public Board
               </router-link>
             </li>
-          </ul>
-          <ul class="nav flex-column mb-2">
-            <li class="nav-item" v-for="prj in projectsStore.myInprogressProjects" :key="prj.id">
-              <router-link class="nav-link w-100 me-3" :class="{
-                active: $route.name == 'ProjectTasks' && $route.params.id == prj.id,
-              }" :to="{ name: 'ProjectTasks', params: { id: prj.id } }" @click="clickMenuOption">
-                <i class="bi bi-file-ruled"></i>
-                {{ prj.name }}
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C' && userStore.user?.type!='ED'">
+              <router-link class="nav-link" :class="{ active: $route.name === 'Kitchen' }" :to="{ name: 'Kitchen' }"
+                @click="clickMenuOption">
+                <i class="bi bi-list-ul"></i>                                   
+                Kitchen
               </router-link>
             </li>
           </ul>
@@ -225,7 +222,7 @@ const clickMenuOption = () => {
                   </li>
                   <li>
                     <a class="dropdown-item" @click.prevent="logout">
-                      <i class="bi bi-arrow-right"></i>Logout
+                      <i  class="bi bi-arrow-right"></i>Logout
                     </a>
                   </li>
                 </ul>
@@ -243,6 +240,10 @@ const clickMenuOption = () => {
 
 <style>
 @import "./assets/dashboard.css";
+
+a {
+  cursor: pointer;
+}
 
 .avatar-img {
   margin: -1.2rem 0.8rem -2rem 0.8rem;
