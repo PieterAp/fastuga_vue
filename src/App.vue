@@ -2,14 +2,14 @@
 import { useRouter, RouterLink, RouterView } from "vue-router"
 import { ref, inject } from "vue"
 import { useUserStore } from "./stores/user.js"
-import { useProjectsStore } from "./stores/projects.js"
 import { useCartStore } from "./stores/cart.js"
+import { usePointsStore } from "./stores/points.js"
 
 const router = useRouter()
 const toast = inject("toast")
 const userStore = useUserStore()
-const projectsStore = useProjectsStore()
 const cartStore = useCartStore()
+const pointsStore = usePointsStore()
 
 const buttonSidebarExpand = ref(null)
 
@@ -53,6 +53,11 @@ const clickMenuOption = () => {
                 {{cartStore?.totalItems}}
               </button>
             </router-link>
+          </li>
+          <li v-show="userStore.user?.type=='C'" class="nav-item" style="display: flex; align-items: center;">
+            <i class="nav-link">
+                Points: {{pointsStore?.totalPoints}}
+            </i>
           </li>
           <li class="nav-item" v-show="!userStore.user">
             <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"

@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import { useCartStore } from "../../stores/cart.js"
+import { useUserStore } from "../../stores/user.js"
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject('serverBaseUrl')
 const cartStore = useCartStore()
+const userStore = useUserStore()
 const toast = inject("toast")
 const items = ref(null)
 
@@ -14,7 +16,13 @@ const paymentReferences = ref({
   email: '',
 })
 
+const discount = ref({
+  value: '',
+})
+
 const paymentType = ref("Visa")
+const discounts = ref(null)
+const selectedValue = ref("Choose...")
 
 function productPhotoUrl(product) {
   if (!product?.photo_url) {
@@ -31,14 +39,40 @@ function getItems() {
   }
 }
 
+function calculatePoints() {
+  let points = userStore.user.points
+  if (points > 10) {
+    let i = 10
+    let j = 1
+
+    discounts.value = []
+    discounts.value.push("Choose...")
+    for (; i <= points; i += 10, j++) {
+      discounts.value.push(i)
+    }
+  } else {
+    discounts.value = null
+  }
+
+}
+
+function onChange(event) {
+  if (event.target.value == 'Choose...') {
+    discount.value.value = null
+  } else {
+    discount.value.value = event.target.value / 2 + ".00€"
+  }
+}
+
 function deleteItem(item) {
   cartStore.deleteItem(item)
 }
 
 function changeType(type) {
+  selectedValue.value = "Choose..."
+  discount.value.value = null
   paymentType.value = type
 }
-
 
 function processPayment() {
   let reference = ''
@@ -69,6 +103,7 @@ function processPayment() {
 
 onMounted(() => {
   getItems()
+  calculatePoints()
 })
 
 </script>
@@ -102,12 +137,17 @@ onMounted(() => {
                   </div>
                   <hr class="mb-4" style="height: 2px; background-color: #1266f1; opacity: 1;">
                   <div class="d-flex justify-content-between px-x">
-                    <p class="fw-bold">Discount:</p>
-                    <p class="fw-bold"></p>
+                    <p class="fw-bold">Subtotal:</p>
+                    <p class="fw-bold">{{ cartStore?.totalValue+"€" }}</p>
                   </div>
+                  <div class="d-flex justify-content-between px-x">
+                    <p class="fw-bold">Discount:</p>
+                    <p class="fw-bold">{{ discount?.value }}</p>
+                  </div>              
                   <div class="d-flex justify-content-between p-2 mb-2" style="background-color: #e1f5fe;">
                     <h5 class="fw-bold mb-0">Total:</h5>
-                    <h5 class="fw-bold mb-0">{{ cartStore?.totalValue + "€" }}</h5>
+                    <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" : cartStore?.totalValue - discount.value.slice(0, -1) + "€"
+                    }}</h5>
                   </div>
                 </div>
                 <div class="col-lg-6 px-5 py-4">
@@ -146,6 +186,32 @@ onMounted(() => {
                         </div>
                       </div>
                     </div>
+                    <div class="row" v-if="discounts">
+                      <div class="col-md-6 mb-5">
+                        <div class="input-group mb-3">
+                          <div class="form-control form-control-lg">
+                            <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
+                              style="width:100%; border-color: #ffffff; outline: none;">
+                              <option :value="discount" v-for="discount in discounts">{{
+                                  discount
+                              }}</option>
+                            </select>
+                          </div>
+                          <div class="input-group mb-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="typeText">Points</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-5">
+                        <div class="form-outline">
+                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
+                            disabled v-model="discount.value" maxlength="3" />
+                          <label class="form-label" for="typeText">Discount</label>
+                        </div>
+                      </div>
+                    </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
                       :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
                   </form>
@@ -155,6 +221,30 @@ onMounted(() => {
                         siez="17" />
                       <label class="form-label" for="typeText">Email</label>
                     </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-5">
+                        <div class="input-group mb-3">
+                          <div class="form-control form-control-lg">
+                            <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
+                              style="width:100%; border-color: #ffffff; outline: none;">
+                              <option v-for="discount in discounts">{{ discount }}</option>
+                            </select>
+                          </div>
+                          <div class="input-group mb-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="typeText">Points</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-5">
+                        <div class="form-outline">
+                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
+                            disabled v-model="discount.value" maxlength="3" />
+                          <label class="form-label" for="typeText">Discount</label>
+                        </div>
+                      </div>
+                    </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
                       :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
                   </form>
@@ -163,6 +253,30 @@ onMounted(() => {
                       <input type="text" v-model="paymentReferences.phone_number" class="form-control form-control-lg"
                         siez="17" minlength="9" maxlength="9" />
                       <label class="form-label" for="typeText">Phone Number</label>
+                    </div>
+                    <div class="row" v-if="discounts">
+                      <div class="col-md-6 mb-5">
+                        <div class="input-group mb-3">
+                          <div class="form-control form-control-lg">
+                            <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
+                              style="width:100%; border-color: #ffffff; outline: none;">
+                              <option v-for="discount in discounts">{{ discount }}</option>
+                            </select>
+                          </div>
+                          <div class="input-group mb-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="typeText">Points</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-5">
+                        <div class="form-outline">
+                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
+                            disabled v-model="discount.value" maxlength="3" />
+                          <label class="form-label" for="typeText">Discount</label>
+                        </div>
+                      </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
                       :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
