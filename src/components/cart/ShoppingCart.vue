@@ -41,20 +41,22 @@ function changeType(type) {
 
 
 function proccessPayment() {
+  let reference = ''
   if(paymentType.value=="Visa"){
-    cartStore.proccessPayment(paymentType.value,paymentReferences.value.card_number,cartStore?.totalValue)
+    reference = paymentReferences.value.card_number
+  }else if(paymentType.value=="Paypal"){
+    reference = paymentReferences.value.email
+  }else{
+    reference = paymentReferences.value.phone_number
+  }
+
+  cartStore.proccessPayment(paymentType.value,reference,cartStore?.totalValue)
     .then(() => {
       toast.success("Pedido realizado com successo")
     })
     .catch(() => {
       toast.error("It was not possible to proccess your payment!")
     })
-
-  }else if(paymentType.value=="Paypal"){
-    cartStore.proccessPayment(paymentType.value,paymentReferences.value.phone_number,cartStore?.totalValue)
-  }else{
-    cartStore.proccessPayment(paymentType.value,paymentReferences.value.email,cartStore?.totalValue)
-  }
  
 }
 
@@ -143,18 +145,18 @@ onMounted(() => {
                   </form>
                   <form v-show="paymentType=='Paypal'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text"  v-model="paymentReferences.phone_number" class="form-control form-control-lg" siez="17"
-                         minlength="19" maxlength="19" />
-                      <label class="form-label" for="typeText">Phone Number</label>
+                      <input type="text"  v-model="paymentReferences.email" class="form-control form-control-lg" siez="17"
+                         />
+                      <label class="form-label" for="typeText">Email</label>
                     </div>           
                     <button type="button" class="btn btn-primary btn-block btn-lg"
                       :disabled="cartStore?.totalValue == '0.00'" @click="proccessPayment">Buy now</button>
                   </form>
                   <form v-show="paymentType=='MbWay'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text"  v-model="paymentReferences.email" class="form-control form-control-lg" siez="17"
-                         minlength="19" maxlength="19" />
-                      <label class="form-label" for="typeText">Email</label>
+                      <input type="text"  v-model="paymentReferences.phone_number" class="form-control form-control-lg" siez="17"
+                         minlength="9" maxlength="9" />
+                      <label class="form-label" for="typeText">Phone Number</label>
                     </div>           
                     <button type="button" class="btn btn-primary btn-block btn-lg"
                       :disabled="cartStore?.totalValue == '0.00'" @click="proccessPayment">Buy now</button>
