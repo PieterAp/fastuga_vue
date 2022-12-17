@@ -75,6 +75,7 @@ function changeType(type) {
 }
 
 function processPayment() {
+
   let reference = ''
   if (paymentType.value == "Visa") {
     reference = paymentReferences.value.card_number
@@ -84,12 +85,22 @@ function processPayment() {
     reference = paymentReferences.value.phone_number
   }
 
+  let points = {
+    total_price: parseFloat(cartStore?.totalValue),
+    total_paid: cartStore?.totalValue - discount.value.value.slice(0, -1),
+    total_paid_with_points: discount.value.value != 0 ? parseFloat(discount.value.value.slice(0, -1)) : 0,
+    points_gained: Math.floor(cartStore?.totalValue / 10),
+    points_used_to_pay: discount.value.value.slice(0, -1) * 2
+  }
+
   cartStore.processPayment(paymentType.value, reference, cartStore?.totalValue)
     .then(() => {
       toast.success("Payment processed successfully")
-      cartStore.processOrder(paymentType.value, reference)
-        .then(() => {
+      cartStore.processOrder(paymentType.value, reference, points)
+        .then((response) => {
           toast.success("Order processed successfully")
+          //TODO cartStore.updatePoints()
+          //TODO cartStore.createOrderItems(response)
         })
         .catch(() => {
           toast.error("It was not possible to process your order!")
@@ -138,15 +149,16 @@ onMounted(() => {
                   <hr class="mb-4" style="height: 2px; background-color: #1266f1; opacity: 1;">
                   <div v-if="discount?.value" class="d-flex justify-content-between px-x">
                     <p class="fw-bold">Subtotal:</p>
-                    <p class="fw-bold">{{ cartStore?.totalValue+"€" }}</p>
+                    <p class="fw-bold">{{ cartStore?.totalValue + "€" }}</p>
                   </div>
                   <div v-if="discount?.value" class="d-flex justify-content-between px-x">
                     <p class="fw-bold">Discount:</p>
                     <p class="fw-bold">{{ discount?.value }}</p>
-                  </div>              
+                  </div>
                   <div class="d-flex justify-content-between p-2 mb-2" style="background-color: #e1f5fe;">
                     <h5 class="fw-bold mb-0">Total:</h5>
-                    <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" : cartStore?.totalValue - discount.value.slice(0, -1) + "€"
+                    <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" : cartStore?.totalValue -
+                        discount.value.slice(0, -1) + "€"
                     }}</h5>
                   </div>
                 </div>
@@ -162,27 +174,27 @@ onMounted(() => {
                   </div>
                   <form v-show="paymentType == 'Visa'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text" v-model="paymentReferences.card_number" class="form-control form-control-lg"
-                        siez="17" minlength="16" maxlength="16" />
+                      <input :disabled="cartStore?.totalValue == 0" type="text" v-model="paymentReferences.card_number"
+                        class="form-control form-control-lg" minlength="16" maxlength="16" />
                       <label class="form-label" for="typeText">Card Number</label>
                     </div>
                     <div class="form-outline mb-5">
-                      <input type="text" id="typeName" class="form-control form-control-lg" siez="17" />
-                      <label class="form-label" for="typeName">Name on card</label>
+                      <input type="text" class="form-control form-control-lg" :disabled="cartStore?.totalValue == 0" />
+                      <label class="form-label">Name on card</label>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="text" id="typeExp" class="form-control form-control-lg" size="7" minlength="7"
-                            maxlength="7" />
-                          <label class="form-label" for="typeExp">Expiration</label>
+                          <input type="text" class="form-control form-control-lg" minlength="7" maxlength="7"
+                            :disabled="cartStore?.totalValue == 0" />
+                          <label class="form-label">Expiration</label>
                         </div>
                       </div>
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="password" class="form-control form-control-lg" size="1" minlength="3"
-                            maxlength="3" />
-                          <label class="form-label" for="typeText">Cvv</label>
+                          <input type="password" class="form-control form-control-lg" minlength="3" maxlength="3"
+                            :disabled="cartStore?.totalValue == 0" />
+                          <label class="form-label">Cvv</label>
                         </div>
                       </div>
                     </div>
@@ -190,7 +202,8 @@ onMounted(() => {
                       <div class="col-md-6 mb-5">
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
-                            <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
+                            <select :disabled="cartStore?.totalValue == 0" v-model="selectedValue"
+                              @change="onChange($event)" class="custom-select"
                               style="width:100%; border-color: #ffffff; outline: none;">
                               <option :value="discount" v-for="discount in discounts">{{
                                   discount
@@ -206,19 +219,20 @@ onMounted(() => {
                       </div>
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
-                            disabled v-model="discount.value" maxlength="3" />
+                          <input type="text" class="form-control form-control-lg" readonly disabled
+                            v-model="discount.value" />
                           <label class="form-label" for="typeText">Discount</label>
                         </div>
                       </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00' || !paymentReferences.card_number"
+                      @click="processPayment">Buy now</button>
                   </form>
                   <form v-show="paymentType == 'Paypal'" class="mb-5">
                     <div class="form-outline mb-5">
                       <input type="text" v-model="paymentReferences.email" class="form-control form-control-lg"
-                        siez="17" />
+                        siez="17" :disabled="cartStore?.totalValue == 0" />
                       <label class="form-label" for="typeText">Email</label>
                     </div>
                     <div class="row">
@@ -226,7 +240,8 @@ onMounted(() => {
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
                             <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
-                              style="width:100%; border-color: #ffffff; outline: none;">
+                              style="width:100%; border-color: #ffffff; outline: none;"
+                              :disabled="cartStore?.totalValue == 0">
                               <option v-for="discount in discounts">{{ discount }}</option>
                             </select>
                           </div>
@@ -239,19 +254,20 @@ onMounted(() => {
                       </div>
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
-                            disabled v-model="discount.value" maxlength="3" />
+                          <input type="text" class="form-control form-control-lg" readonly disabled
+                            v-model="discount.value" />
                           <label class="form-label" for="typeText">Discount</label>
                         </div>
                       </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00' || !paymentReferences.email"
+                      @click="processPayment">Buy now</button>
                   </form>
                   <form v-show="paymentType == 'MbWay'" class="mb-5">
                     <div class="form-outline mb-5">
                       <input type="text" v-model="paymentReferences.phone_number" class="form-control form-control-lg"
-                        siez="17" minlength="9" maxlength="9" />
+                        siez="17" minlength="9" maxlength="9" :disabled="cartStore?.totalValue == 0" />
                       <label class="form-label" for="typeText">Phone Number</label>
                     </div>
                     <div class="row" v-if="discounts">
@@ -259,7 +275,8 @@ onMounted(() => {
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
                             <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
-                              style="width:100%; border-color: #ffffff; outline: none;">
+                              style="width:100%; border-color: #ffffff; outline: none;"
+                              :disabled="cartStore?.totalValue == 0">
                               <option v-for="discount in discounts">{{ discount }}</option>
                             </select>
                           </div>
@@ -272,14 +289,15 @@ onMounted(() => {
                       </div>
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="text" class="form-control form-control-lg" size="1" minlength="3" readonly
-                            disabled v-model="discount.value" maxlength="3" />
+                          <input type="text" class="form-control form-control-lg" readonly disabled
+                            v-model="discount.value" />
                           <label class="form-label" for="typeText">Discount</label>
                         </div>
                       </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00' || !paymentReferences.phone_number"
+                      @click="processPayment">Buy now</button>
                   </form>
                 </div>
               </div>

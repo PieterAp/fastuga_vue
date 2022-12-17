@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed ,inject} from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useUserStore } from "./user.js"
@@ -7,6 +7,7 @@ import moment from 'moment';
 export const useCartStore = defineStore('cart', () => {
     const items = ref([])
     const userStore = useUserStore()
+    const axiosIj = inject('axios')
 
     const totalItems = computed(() => {
         return items.value.length
@@ -51,18 +52,16 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     async function processOrder(paymentType,reference,points) {
+       
 
         let formData = new FormData()
+        formData.append('total_price',points.total_price)
 
-        /*
-        formData.append('total_price',product.value.name)
-
-        formData.append('total_paid',product.value.description)
-        formData.append('total_paid_with_points',product.value.price)
-        formData.append('points_gained',product.value.photo)
-        formData.append('points_used_to_pay',product.value.photo)
-        */
-
+        formData.append('total_paid',points.total_paid)
+        formData.append('total_paid_with_points',points.total_paid_with_points)
+        formData.append('points_gained',points.points_gained)
+        formData.append('points_used_to_pay',points.points_used_to_pay)
+     
         const current = moment(new Date()).format('YYYY-MM-DD')
        
         formData.append('date', current)        
@@ -73,7 +72,7 @@ export const useCartStore = defineStore('cart', () => {
             formData.append('customer_id',userStore.user.id)
         }
 
-        const response = await axios.post('orders', formData)
+        const response = await axiosIj.post('orders', formData)
         return response.data.data
     }
 
