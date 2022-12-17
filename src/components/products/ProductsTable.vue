@@ -35,8 +35,10 @@
         <td>{{ product.price+"€"}}</td>
         <td
           class="text-end">
-          <div class="d-flex justify-content-end">
+          <div 
+            class="d-flex justify-content-end">
             <button
+              v-if="!product.deleted_at"
               class="btn btn-xs btn-light"
               @click="editClick(product)"          
             ><i class="bi bi-xs bi-pencil"></i>
