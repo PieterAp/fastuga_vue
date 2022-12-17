@@ -22,7 +22,7 @@
         email: '',
         password:'',
         type:'',
-        photo_url: null
+        //photo_url: null
       }
   }
 
@@ -48,18 +48,25 @@
   const save = () => {
       errors.value = null
       if(operation.value == 'insert'){
-        axios.post('user', user.value)
+        
+        let config = { headers: { 'Content-Type': 'application/json' } }
+        let formData = new FormData()
+        formData.append('name',user.value.name)
+        formData.append('email',user.value.email)
+        formData.append('password',user.value.password)
+
+        axios.post('users', formData, config)
           .then((response) => {
             
             user.value = response.data.data
             
             originalValueStr = dataAsString()
-            toast.success('Task #' + task.value.id + ' was created successfully.')
+            toast.success('User #' + user.value.id + ' was created successfully.')
             router.back()
           })
           .catch((error) => {
             if (error.response.status == 422) {
-              //toast.error('Task was not created due to validation errors!')
+              toast.error('Task was not created due to validation errors!')
               errors.value = error.response.data.errors
             } else {
               errors.value = error.response.data.errors

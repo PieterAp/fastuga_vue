@@ -85,14 +85,20 @@ const cancel = () => {
           <field-error-message :errors="errors" fieldName="password"></field-error-message>
         </div>
         <div class=" flex-wrap justify-content-between">
-      <label for="name" class="col-sm-2 col-form-label">Type</label>
-      <div class="col-sm-10">
+      
+      
+      <!--
+        ENUNCIADO NAO FALA SOBRE ALTERAR TIPO, MAYBE NOT POSSIBLE????
+        <label for="name" class="col-sm-2 col-form-label">Type</label>
+        <div class="col-sm-10">
         <select class="form-select" id="type" v-model="editingUser.type">
           <option value="EM">Manager</option>
           <option value="EC">CHEF</option>
           <option value="ED">DELIVERY</option>
         </select>
       </div>
+      -->
+      
     </div>
       </div>
       <div class="w-25">
