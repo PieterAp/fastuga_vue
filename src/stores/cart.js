@@ -1,9 +1,12 @@
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { useUserStore } from "./user.js"
+import moment from 'moment';
 
 export const useCartStore = defineStore('cart', () => {
     const items = ref([])
+    const userStore = useUserStore()
 
     const totalItems = computed(() => {
         return items.value.length
@@ -26,9 +29,7 @@ export const useCartStore = defineStore('cart', () => {
         return items.value
     }
 
-    async function proccessPayment(type, reference, total) {
-
-        //const payment = { "type":"visa", "reference":"4111111111111111" ,"value":5.40 }    
+    async function processPayment(type, reference, total) {
 
         var data = JSON.stringify({
             "type": type.toLowerCase(),
@@ -49,6 +50,33 @@ export const useCartStore = defineStore('cart', () => {
         return response.data.data
     }
 
+    async function processOrder(paymentType,reference,points) {
+
+        let formData = new FormData()
+
+        /*
+        formData.append('total_price',product.value.name)
+
+        formData.append('total_paid',product.value.description)
+        formData.append('total_paid_with_points',product.value.price)
+        formData.append('points_gained',product.value.photo)
+        formData.append('points_used_to_pay',product.value.photo)
+        */
+
+        const current = moment(new Date()).format('YYYY-MM-DD')
+       
+        formData.append('date', current)        
+        formData.append('payment_type',paymentType)
+        formData.append('payment_reference',reference)
+
+        if(userStore.user){
+            formData.append('customer_id',userStore.user.id)
+        }
+
+        const response = await axios.post('orders', formData)
+        return response.data.data
+    }
+
     function insertItem(newItem) {
         items.value.push(newItem)
     }
@@ -60,5 +88,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue, proccessPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue, processOrder ,processPayment, clearCart, getItems, insertItem, deleteItem }
 })

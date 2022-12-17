@@ -9,10 +9,10 @@ const toast = inject("toast")
 const items = ref(null)
 
 const paymentReferences = ref({
-        card_number: '',
-        phone_number: '',
-        email: '',
-    })
+  card_number: '',
+  phone_number: '',
+  email: '',
+})
 
 const paymentType = ref("Visa")
 
@@ -36,28 +36,35 @@ function deleteItem(item) {
 }
 
 function changeType(type) {
-  paymentType.value=type
+  paymentType.value = type
 }
 
 
-function proccessPayment() {
+function processPayment() {
   let reference = ''
-  if(paymentType.value=="Visa"){
+  if (paymentType.value == "Visa") {
     reference = paymentReferences.value.card_number
-  }else if(paymentType.value=="Paypal"){
+  } else if (paymentType.value == "Paypal") {
     reference = paymentReferences.value.email
-  }else{
+  } else {
     reference = paymentReferences.value.phone_number
   }
 
-  cartStore.proccessPayment(paymentType.value,reference,cartStore?.totalValue)
+  cartStore.processPayment(paymentType.value, reference, cartStore?.totalValue)
     .then(() => {
-      toast.success("Pedido realizado com successo")
+      toast.success("Payment processed successfully")
+      cartStore.processOrder(paymentType.value, reference)
+        .then(() => {
+          toast.success("Order processed successfully")
+        })
+        .catch(() => {
+          toast.error("It was not possible to process your order!")
+        })
     })
     .catch(() => {
-      toast.error("It was not possible to proccess your payment!")
+      toast.error("It was not possible to process your payment!")
     })
- 
+
 }
 
 onMounted(() => {
@@ -113,53 +120,52 @@ onMounted(() => {
                     <img src="src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('MbWay')">
                   </div>
-                  <form v-show="paymentType=='Visa'" class="mb-5">
+                  <form v-show="paymentType == 'Visa'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text"  v-model="paymentReferences.card_number" class="form-control form-control-lg" siez="17"
-                         minlength="16" maxlength="16" />
+                      <input type="text" v-model="paymentReferences.card_number" class="form-control form-control-lg"
+                        siez="17" minlength="16" maxlength="16" />
                       <label class="form-label" for="typeText">Card Number</label>
                     </div>
                     <div class="form-outline mb-5">
-                      <input type="text" id="typeName" class="form-control form-control-lg" siez="17"
-                        value="John Smith" />
+                      <input type="text" id="typeName" class="form-control form-control-lg" siez="17" />
                       <label class="form-label" for="typeName">Name on card</label>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="text" id="typeExp" class="form-control form-control-lg" value="01/22" size="7"
-                            minlength="7" maxlength="7" />
+                          <input type="text" id="typeExp" class="form-control form-control-lg" size="7" minlength="7"
+                            maxlength="7" />
                           <label class="form-label" for="typeExp">Expiration</label>
                         </div>
                       </div>
                       <div class="col-md-6 mb-5">
                         <div class="form-outline">
-                          <input type="password" class="form-control form-control-lg" value="&#9679;&#9679;&#9679;"
-                            size="1" minlength="3" maxlength="3" />
+                          <input type="password" class="form-control form-control-lg" size="1" minlength="3"
+                            maxlength="3" />
                           <label class="form-label" for="typeText">Cvv</label>
                         </div>
                       </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="proccessPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
                   </form>
-                  <form v-show="paymentType=='Paypal'" class="mb-5">
+                  <form v-show="paymentType == 'Paypal'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text"  v-model="paymentReferences.email" class="form-control form-control-lg" siez="17"
-                         />
+                      <input type="text" v-model="paymentReferences.email" class="form-control form-control-lg"
+                        siez="17" />
                       <label class="form-label" for="typeText">Email</label>
-                    </div>           
+                    </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="proccessPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
                   </form>
-                  <form v-show="paymentType=='MbWay'" class="mb-5">
+                  <form v-show="paymentType == 'MbWay'" class="mb-5">
                     <div class="form-outline mb-5">
-                      <input type="text"  v-model="paymentReferences.phone_number" class="form-control form-control-lg" siez="17"
-                         minlength="9" maxlength="9" />
+                      <input type="text" v-model="paymentReferences.phone_number" class="form-control form-control-lg"
+                        siez="17" minlength="9" maxlength="9" />
                       <label class="form-label" for="typeText">Phone Number</label>
-                    </div>           
+                    </div>
                     <button type="button" class="btn btn-primary btn-block btn-lg"
-                      :disabled="cartStore?.totalValue == '0.00'" @click="proccessPayment">Buy now</button>
+                      :disabled="cartStore?.totalValue == '0.00'" @click="processPayment">Buy now</button>
                   </form>
                 </div>
               </div>
@@ -202,7 +208,6 @@ onMounted(() => {
 }
 
 .number-input button {
-  -webkit-appearance: none;
   background-color: transparent;
   border: none;
   align-items: center;
