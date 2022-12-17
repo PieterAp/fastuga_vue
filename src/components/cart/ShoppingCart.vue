@@ -21,7 +21,7 @@ const discount = ref({
 })
 
 const paymentType = ref("Visa")
-const discounts = ref(null)
+const pointsOptions = ref(null)
 const selectedValue = ref("Choose...")
 
 function productPhotoUrl(product) {
@@ -45,13 +45,18 @@ function calculatePoints() {
     let i = 10
     let j = 1
 
-    discounts.value = []
-    discounts.value.push("Choose...")
+    points=50
+
+    pointsOptions.value = []
+    pointsOptions.value.push("Choose...")
+
     for (; i <= points; i += 10, j++) {
-      discounts.value.push(i)
+      if((cartStore?.totalValue-i/2)>0){
+        pointsOptions.value.push(i)
+      }
     }
   } else {
-    discounts.value = null
+    pointsOptions.value = null
   }
 
 }
@@ -66,6 +71,7 @@ function onChange(event) {
 
 function deleteItem(item) {
   cartStore.deleteItem(item)
+  calculatePoints()
 }
 
 function changeType(type) {
@@ -157,8 +163,8 @@ onMounted(() => {
                   </div>
                   <div class="d-flex justify-content-between p-2 mb-2" style="background-color: #e1f5fe;">
                     <h5 class="fw-bold mb-0">Total:</h5>
-                    <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" : cartStore?.totalValue -
-                        discount.value.slice(0, -1) + "€"
+                    <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" :
+                     parseFloat(cartStore?.totalValue - discount.value.slice(0, -1)).toFixed(2) + "€"
                     }}</h5>
                   </div>
                 </div>
@@ -198,15 +204,15 @@ onMounted(() => {
                         </div>
                       </div>
                     </div>
-                    <div class="row" v-if="discounts">
+                    <div class="row" v-if="pointsOptions">
                       <div class="col-md-6 mb-5">
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
-                            <select :disabled="cartStore?.totalValue == 0" v-model="selectedValue"
+                            <select :disabled="cartStore?.totalValue == 0 || (cartStore?.totalValue-5)<0" v-model="selectedValue"
                               @change="onChange($event)" class="custom-select"
                               style="width:100%; border-color: #ffffff; outline: none;">
-                              <option :value="discount" v-for="discount in discounts">{{
-                                  discount
+                              <option v-for="option in pointsOptions">{{
+                                  option
                               }}</option>
                             </select>
                           </div>
@@ -242,7 +248,7 @@ onMounted(() => {
                             <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
                               style="width:100%; border-color: #ffffff; outline: none;"
                               :disabled="cartStore?.totalValue == 0">
-                              <option v-for="discount in discounts">{{ discount }}</option>
+                              <option v-for="option in pointsOptions">{{ option }}</option>
                             </select>
                           </div>
                           <div class="input-group mb-3">
@@ -270,14 +276,14 @@ onMounted(() => {
                         siez="17" minlength="9" maxlength="9" :disabled="cartStore?.totalValue == 0" />
                       <label class="form-label" for="typeText">Phone Number</label>
                     </div>
-                    <div class="row" v-if="discounts">
+                    <div class="row" v-if="pointsOptions">
                       <div class="col-md-6 mb-5">
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
                             <select v-model="selectedValue" @change="onChange($event)" class="custom-select"
                               style="width:100%; border-color: #ffffff; outline: none;"
                               :disabled="cartStore?.totalValue == 0">
-                              <option v-for="discount in discounts">{{ discount }}</option>
+                              <option v-for="option in pointsOptions">{{ option }}</option>
                             </select>
                           </div>
                           <div class="input-group mb-3">
