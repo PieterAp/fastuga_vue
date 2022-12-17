@@ -136,11 +136,11 @@ onMounted(() => {
                     </div>
                   </div>
                   <hr class="mb-4" style="height: 2px; background-color: #1266f1; opacity: 1;">
-                  <div class="d-flex justify-content-between px-x">
+                  <div v-if="discount?.value" class="d-flex justify-content-between px-x">
                     <p class="fw-bold">Subtotal:</p>
                     <p class="fw-bold">{{ cartStore?.totalValue+"€" }}</p>
                   </div>
-                  <div class="d-flex justify-content-between px-x">
+                  <div v-if="discount?.value" class="d-flex justify-content-between px-x">
                     <p class="fw-bold">Discount:</p>
                     <p class="fw-bold">{{ discount?.value }}</p>
                   </div>              
