@@ -60,7 +60,7 @@ const assignItemConfirmed = () => {
 function compare(a, b) {
 
   if (b == null) {
-    
+
     if (a.status == 'W') a.status = 'Awaiting Chef'
     if (a.status == 'P') a.status = 'Being prepared'
     if (a.status == 'R') a.status = 'Dish Ready'
@@ -77,22 +77,21 @@ function compare(a, b) {
   return 0;
 }
 
-
-socket.on('updateItem', (newItem) => {
-  let idx = items.value.findIndex((t) => t.id === newItem.id)
-  if (idx >= 0) {
-    items.value[idx] = newItem
-  }
-  toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned " + newItem.preparation_by)
-})
-
-socket.on('newItem', (newItem) => {
-  items.value.push(newItem)
-  toast.info("New dish "+newItem.product_name+" was request!")
-})
-
 onMounted(() => {
   loadHotDishes()
+  socket.on('updateItem', (newItem) => {
+    let idx = items.value.findIndex((t) => t.id === newItem.id)
+    if (idx >= 0) {
+      items.value[idx] = newItem
+    }
+    toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned " + newItem.preparation_by)
+  })
+
+
+  socket.on('newItem', (newItem) => {
+    toast.info("New dish " + newItem.product_name + " was request!")
+    items.value.push(newItem)
+  })
 })
 
 </script>
@@ -114,18 +113,19 @@ onMounted(() => {
         <img :src="productPhotoUrl(item)" class="card-img-top">
         <div class="card-body">
 
-          <h5 v-if="item.status == 'Awaiting Chef' || item.status == 'W'" class="card-red">{{ item.status == "Awaiting Chef" 
-          ||  item.status =="W" ? item.status = "Awaiting Chef"
-              : ""
+          <h5 v-if="item.status == 'Awaiting Chef' || item.status == 'W'" class="card-red">{{ item.status == "Awaiting Chef"
+                      || item.status == "W" ? item.status = "Awaiting Chef"
+                : ""
           }}
           </h5>
-          <h5 v-if="item.status == 'Being prepared' || item.status == 'P' " class="card-blue">{{ item.status == "Being prepared" 
-          ||  item.status =="P" ? item.status = "Being prepared"
-              : ""              
+          <h5 v-if="item.status == 'Being prepared' || item.status == 'P'" class="card-blue">{{ item.status == "Being prepared"
+                      || item.status == "P" ? item.status = "Being prepared"
+                : ""
           }}
           </h5>
-          <h5 v-if="item.status == 'Dish Ready' || item.status == 'R'" class="card-green">{{ item.status == "Dish Ready" 
-          ||  item.status =="R" ? item.status = "Dish Ready" : "" }}
+          <h5 v-if="item.status == 'Dish Ready' || item.status == 'R'" class="card-green">{{ item.status == "Dish Ready"
+              || item.status == "R" ? item.status = "Dish Ready" : ""
+          }}
           </h5>
 
           <h5 class="card-title">{{ item.product_name }}</h5>
