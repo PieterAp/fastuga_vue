@@ -1,4 +1,4 @@
-import { ref, computed ,inject} from 'vue'
+import { ref, computed, inject } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useUserStore } from "./user.js"
@@ -36,45 +36,74 @@ export const useCartStore = defineStore('cart', () => {
             "type": type.toLowerCase(),
             "reference": reference,
             "value": parseFloat(total)
-          });
+        });
 
         var config = {
             method: 'post',
             url: 'https://dad-202223-payments-api.vercel.app/api/payments',
-            headers: { 
-              'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             },
-            data : data
-          };
+            data: data
+        };
 
         const response = await axios(config)
         return response.data.data
     }
 
-    async function processOrder(paymentType,reference,points) {
-       
+    async function processOrder(paymentType, reference, points) {
+
 
         let formData = new FormData()
-        formData.append('total_price',points.total_price)
+        formData.append('total_price', points.total_price)
 
-        formData.append('total_paid',points.total_paid)
-        formData.append('total_paid_with_points',points.total_paid_with_points)
-        formData.append('points_gained',points.points_gained)
-        formData.append('points_used_to_pay',points.points_used_to_pay)
-     
+        formData.append('total_paid', points.total_paid)
+        formData.append('total_paid_with_points', points.total_paid_with_points)
+        formData.append('points_gained', points.points_gained)
+        formData.append('points_used_to_pay', points.points_used_to_pay)
+
         const current = moment(new Date()).format('YYYY-MM-DD')
-       
-        formData.append('date', current)        
-        formData.append('payment_type',paymentType)
-        formData.append('payment_reference',reference)
 
-        if(userStore.user){
-            formData.append('customer_id',userStore.user.id)
+        formData.append('date', current)
+        formData.append('payment_type', paymentType)
+        formData.append('payment_reference', reference)
+
+        if (userStore.user) {
+            formData.append('customer_id', userStore.user.id)
         }
 
         const response = await axiosIj.post('orders', formData)
         return response.data.data
     }
+
+    async function updatePoints(order) {
+
+        let oldPoints = parseInt(userStore.user.points)
+        let points = parseInt((oldPoints + parseInt(order.points_gained)) - order.points_used_to_pay)
+
+        await axiosIj.put('customers/' + userStore.user.id, { points: points })
+        userStore.user.points = points
+    }
+
+    function createOrderItems(order) {
+
+        let i = 1
+
+        items.value.forEach(async item => {
+
+            let formData = new FormData()
+            formData.append('order_id', order.id)
+    
+            formData.append('order_local_number',i)
+            formData.append('product_id', item.id)
+            formData.append('price', item.price)
+             
+            i++
+            await axiosIj.post('ordersItems',formData)
+        });
+      
+    }
+
 
     function insertItem(newItem) {
         items.value.push(newItem)
@@ -87,5 +116,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue, processOrder ,processPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue,createOrderItems ,updatePoints, processOrder, processPayment, clearCart, getItems, insertItem, deleteItem }
 })

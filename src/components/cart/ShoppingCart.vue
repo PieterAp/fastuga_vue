@@ -17,7 +17,7 @@ const paymentReferences = ref({
 })
 
 const discount = ref({
-  value: '',
+  value: null,
 })
 
 const paymentType = ref("Visa")
@@ -45,13 +45,11 @@ function calculatePoints() {
     let i = 10
     let j = 1
 
-    points=50
-
     pointsOptions.value = []
     pointsOptions.value.push("Choose...")
 
     for (; i <= points; i += 10, j++) {
-      if((cartStore?.totalValue-i/2)>0){
+      if ((cartStore?.totalValue - i / 2) > 0) {
         pointsOptions.value.push(i)
       }
     }
@@ -93,10 +91,10 @@ function processPayment() {
 
   let points = {
     total_price: parseFloat(cartStore?.totalValue),
-    total_paid: cartStore?.totalValue - discount.value.value.slice(0, -1),
-    total_paid_with_points: discount.value.value != 0 ? parseFloat(discount.value.value.slice(0, -1)) : 0,
+    total_paid: cartStore?.totalValue - (discount.value.value ? discount.value.value.slice(0, -1) : discount.value.value),
+    total_paid_with_points: discount.value.value != null ? parseFloat(discount.value.value.slice(0, -1)) : 0,
     points_gained: Math.floor(cartStore?.totalValue / 10),
-    points_used_to_pay: discount.value.value.slice(0, -1) * 2
+    points_used_to_pay: (discount.value.value ? discount.value.value.slice(0, -1) : discount.value.value) * 2
   }
 
   cartStore.processPayment(paymentType.value, reference, cartStore?.totalValue)
@@ -105,8 +103,8 @@ function processPayment() {
       cartStore.processOrder(paymentType.value, reference, points)
         .then((response) => {
           toast.success("Order processed successfully")
-          //TODO cartStore.updatePoints()
-          //TODO cartStore.createOrderItems(response)
+          cartStore.updatePoints(response)
+          cartStore.createOrderItems(response)
         })
         .catch(() => {
           toast.error("It was not possible to process your order!")
@@ -164,7 +162,7 @@ onMounted(() => {
                   <div class="d-flex justify-content-between p-2 mb-2" style="background-color: #e1f5fe;">
                     <h5 class="fw-bold mb-0">Total:</h5>
                     <h5 class="fw-bold mb-0">{{ !discount.value ? cartStore?.totalValue + "€" :
-                     parseFloat(cartStore?.totalValue - discount.value.slice(0, -1)).toFixed(2) + "€"
+                        parseFloat(cartStore?.totalValue - discount.value.slice(0, -1)).toFixed(2) + "€"
                     }}</h5>
                   </div>
                 </div>
@@ -208,8 +206,8 @@ onMounted(() => {
                       <div class="col-md-6 mb-5">
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">
-                            <select :disabled="cartStore?.totalValue == 0 || (cartStore?.totalValue-5)<0" v-model="selectedValue"
-                              @change="onChange($event)" class="custom-select"
+                            <select :disabled="cartStore?.totalValue == 0 || (cartStore?.totalValue - 5) < 0"
+                              v-model="selectedValue" @change="onChange($event)" class="custom-select"
                               style="width:100%; border-color: #ffffff; outline: none;">
                               <option v-for="option in pointsOptions">{{
                                   option
@@ -241,7 +239,7 @@ onMounted(() => {
                         siez="17" :disabled="cartStore?.totalValue == 0" />
                       <label class="form-label" for="typeText">Email</label>
                     </div>
-                    <div class="row">
+                    <div class="row" v-if="pointsOptions">
                       <div class="col-md-6 mb-5">
                         <div class="input-group mb-3">
                           <div class="form-control form-control-lg">

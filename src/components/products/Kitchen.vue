@@ -58,14 +58,22 @@ const assignItemConfirmed = () => {
 }
 
 function compare(a, b) {
-  if (a.status == 'W') a.status = 'Awaiting Chef'
-  if (b.status == 'W') b.status = 'Awaiting Chef'
-  if (a.status == 'P') a.status = 'Being prepared'
-  if (b.status == 'P') b.status = 'Being prepared'
-  if (a.status == 'R') a.status = 'Dish Ready'
-  if (b.status == 'R') b.status = 'Dish Ready'
-  if (a.status < b.status) return -1;
-  if (a.last_nom > b.last_nom) return 1;
+  console.log(a.status)
+  if (b == null) {
+    
+    if (a.status == 'W') a.status = 'Awaiting Chef'
+    if (a.status == 'P') a.status = 'Being prepared'
+    if (a.status == 'R') a.status = 'Dish Ready'
+  } else {
+    if (a.status == 'W') a.status = 'Awaiting Chef'
+    if (b.status == 'W') b.status = 'Awaiting Chef'
+    if (a.status == 'P') a.status = 'Being prepared'
+    if (b.status == 'P') b.status = 'Being prepared'
+    if (a.status == 'R') a.status = 'Dish Ready'
+    if (b.status == 'R') b.status = 'Dish Ready'
+    if (a.status < b.status) return -1;
+    if (a.last_nom > b.last_nom) return 1;
+  }
   return 0;
 }
 
@@ -96,20 +104,24 @@ onMounted(() => {
   </div>
   <hr>
   <div class="row">
-    <div v-for="item in items?.sort(compare)    " class="col-md-3 col-sm-6 col-xs-12 d-flex align-items-stretch">
+    <div v-for="item in items?.sort(compare)" class="col-md-3 col-sm-6 col-xs-12 d-flex align-items-stretch">
       <div :style="[item.status == `Awaiting Chef` ? { cursor: 'pointer' } : { cursor: 'arrow' }]" class="card"
         @click="assignItem(item)">
         <img :src="productPhotoUrl(item)" class="card-img-top">
         <div class="card-body">
 
-          <h5 v-if="item.status == 'Awaiting Chef'" class="card-red">{{ item.status == "Awaiting Chef" ? item.status :
-              ""
+          <h5 v-if="item.status == 'Awaiting Chef' || item.status == 'W'" class="card-red">{{ item.status == "Awaiting Chef" 
+          ||  item.status =="W" ? item.status = "Awaiting Chef"
+              : ""
           }}
           </h5>
-          <h5 v-if="item.status == 'Being prepared'" class="card-blue">{{ item.status == "Being prepared" ? item.status
-              : ""
-          }}</h5>
-          <h5 v-if="item.status == 'Dish Ready'" class="card-green">{{ item.status == "Dish Ready" ? item.status : "" }}
+          <h5 v-if="item.status == 'Being prepared' || item.status == 'P' " class="card-blue">{{ item.status == "Being prepared" 
+          ||  item.status =="P" ? item.status = "Being prepared"
+              : ""              
+          }}
+          </h5>
+          <h5 v-if="item.status == 'Dish Ready' || item.status == 'R'" class="card-green">{{ item.status == "Dish Ready" 
+          ||  item.status =="R" ? item.status = "Dish Ready" : "" }}
           </h5>
 
           <h5 class="card-title">{{ item.product_name }}</h5>
