@@ -54,6 +54,7 @@
         formData.append('name',user.value.name)
         formData.append('email',user.value.email)
         formData.append('password',user.value.password)
+        formData.append('type',user.value.type)
 
         axios.post('users', formData, config)
           .then((response) => {

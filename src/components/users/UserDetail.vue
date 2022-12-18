@@ -3,6 +3,7 @@ import { ref, watch, computed, inject } from "vue";
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject("serverBaseUrl");
+const selectedValue = ref("EM")
 
 const props = defineProps({
   user: {
@@ -16,6 +17,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["save", "cancel"]);
+
+function onChange(event) {
+  editingUser.value.type = event.target.value
+}
 
 const editingUser = ref(props.user)
 
@@ -34,7 +39,11 @@ const photoFullUrl = computed(() => {
 })
 
 const save = () => {
+  if(!editingUser.value.type){
+    editingUser.value.type = "EM"
+  }
   emit("save", editingUser.value);
+
 }
 
 const cancel = () => {
@@ -85,20 +94,16 @@ const cancel = () => {
           <field-error-message :errors="errors" fieldName="password"></field-error-message>
         </div>
         <div class=" flex-wrap justify-content-between">
-      
-      
-      <!--
-        ENUNCIADO NAO FALA SOBRE ALTERAR TIPO, MAYBE NOT POSSIBLE????
+                  
         <label for="name" class="col-sm-2 col-form-label">Type</label>
         <div class="col-sm-10">
-        <select class="form-select" id="type" v-model="editingUser.type">
+        <select class="form-select" id="type" v-model="selectedValue" @change="onChange($event)">
           <option value="EM">Manager</option>
           <option value="EC">CHEF</option>
           <option value="ED">DELIVERY</option>
         </select>
       </div>
-      -->
-      
+           
     </div>
       </div>
       <div class="w-25">
