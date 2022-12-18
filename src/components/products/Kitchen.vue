@@ -13,7 +13,9 @@ const toast = inject("toast")
 const items = ref(null)
 const socket = inject("socket")
 const assignConfirmationDialog = ref(null)
+const assignReadyConfirmationDialog = ref(null)
 const assigningItem = ref(null)
+const assigningReadyItem = ref(null)
 
 const props = defineProps({
   type: {
@@ -38,10 +40,15 @@ async function loadHotDishes() {
 }
 
 function assignItem(item) {
+
   if (userStore.user?.type == 'EC' && item.status == 'Awaiting Chef') {
     assigningItem.value = item
     assignConfirmationDialog.value.show()
+  } else if (userStore.user?.type == 'EC' && item.status == 'Being prepared') {
+    assigningReadyItem.value = item  
+    assignReadyConfirmationDialog.value.show()
   }
+
 }
 
 const assignItemConfirmed = () => {
@@ -50,6 +57,19 @@ const assignItemConfirmed = () => {
       items.value = response.value
       socket.emit('updateItem', assigningItem.value)
       toast.success("Dish " + assigningItem.value.product_name + " from ticket #" + assigningItem.value.order_ticket_number + " is now assigned to you")
+    })
+    .catch(() => {
+      toast.error("It was not possible to assign this dish to you!")
+    })
+
+}
+
+const assignItemReadyConfirmed = () => {
+  kitchenStore.updateItemReady(items, assigningReadyItem.value)
+    .then((response) => {
+      items.value = response.value
+      //socket.emit('updateItem', assigningReadyItem.value)
+      toast.success("Dish " + assigningReadyItem.value.product_name + " from ticket #" + assigningItem.value.order_ticket_number + " is now marked as ready")
     })
     .catch(() => {
       toast.error("It was not possible to assign this dish to you!")
@@ -90,16 +110,28 @@ onMounted(() => {
 
   socket.on('newItem', (newItem) => {
     toast.info("New dish " + newItem.product_name + " was request!")
-    items.value.push(newItem)
+    if (items != null) {
+      items.value = []
+      items.value.push(newItem)
+    } else {
+      items.value.push(newItem)
+    }
   })
 })
 
 </script>
 
 <template>
-  <confirmation-dialog ref="assignConfirmationDialog" confirmationBtn="Comfirm"
+
+  <confirmation-dialog  ref="assignConfirmationDialog" confirmationBtn="Comfirm"
     :msg="`Comfirm assignment for dish ${assigningItem?.product_name}?`" @confirmed="assignItemConfirmed">
   </confirmation-dialog>
+
+  <confirmation-dialog  ref="assignReadyConfirmationDialog" confirmationBtn="Comfirm" 
+    :msg="`Comfirm dish ${assigningReadyItem?.product_name} for ticket # ${assigningReadyItem?.order_ticket_number} is ready?`"
+    @confirmed="assignItemReadyConfirmed">
+  </confirmation-dialog>
+
   <div class="d-flex justify-content-between">
     <div class="mx-2">
       <h3 class="mt-4">Hot Dishes</h3>
@@ -108,8 +140,9 @@ onMounted(() => {
   <hr>
   <div class="row">
     <div v-for="item in items?.sort(compare)" class="col-md-3 col-sm-6 col-xs-12 d-flex align-items-stretch">
-      <div :style="[item.status == `Awaiting Chef` ? { cursor: 'pointer' } : { cursor: 'arrow' }]" class="card"
-        @click="assignItem(item)">
+      <div
+        :style="[item.status == `Awaiting Chef` || item.status == `Being prepared` && userStore.user?.type == 'EC' ? { cursor: 'pointer' } : { cursor: 'arrow' }]"
+        class="card" @click="assignItem(item)">
         <img :src="productPhotoUrl(item)" class="card-img-top">
         <div class="card-body">
 

@@ -18,5 +18,15 @@ export const useKitchenStore = defineStore('kitchen', () => {
         return items
     }
 
-    return { items , updateItem }
+
+    async function updateReadyItem(items,item) {
+        const response = await axios.put('ordersItems/' + item.id, { status: 'R'})
+        let idx = items.value.findIndex((t) => t.id === response.data.data.id)
+        if (idx >= 0) {
+            items.value[idx].status = response.data.data.status
+        }
+        return items
+    }
+
+    return { items , updateItem ,updateReadyItem}
 })
