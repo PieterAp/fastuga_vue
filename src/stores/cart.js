@@ -101,7 +101,12 @@ export const useCartStore = defineStore('cart', () => {
              
             i++
             const response = await axiosIj.post('ordersItems',formData)
-            socket.emit('newItem', response.data.data)
+            console.log(response.data.data.product_type)
+
+            if(response.data.data.product_type=="hot dish"){
+                socket.emit('newItem', response.data.data)
+            }
+           
         });
       
     }
