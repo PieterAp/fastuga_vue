@@ -173,7 +173,7 @@ onMounted(() => {
                       alt="Generic placeholder image" @click="changeType('Visa')">
                     <img src="src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('Paypal')">
-                    <img src="src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
+                    <img src="src\assets\8666255_cc_MBway_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('MbWay')">
                   </div>
                   <form v-show="paymentType == 'Visa'" class="mb-5">
