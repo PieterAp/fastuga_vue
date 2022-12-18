@@ -166,7 +166,7 @@ const clickMenuOption = () => {
                 Public Board
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C' && userStore.user?.type!='ED'">
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Kitchen' }" :to="{ name: 'Kitchen' }"
                 @click="clickMenuOption">
                 <i class="bi bi-list-ul"></i>                                   

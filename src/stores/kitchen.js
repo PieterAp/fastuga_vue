@@ -13,13 +13,13 @@ export const useKitchenStore = defineStore('kitchen', () => {
         let idx = items.value.findIndex((t) => t.id === response.data.data.id)
         if (idx >= 0) {
             items.value[idx].status = response.data.data.status
-            items.value[idx].preparation_by = userStore.user.id
+            items.value[idx].preparation_by = userStore.user.name
         }
         return items
     }
 
 
-    async function updateReadyItem(items,item) {
+    async function updateItemReady(items,item) {
         const response = await axios.put('ordersItems/' + item.id, { status: 'R'})
         let idx = items.value.findIndex((t) => t.id === response.data.data.id)
         if (idx >= 0) {
@@ -28,5 +28,5 @@ export const useKitchenStore = defineStore('kitchen', () => {
         return items
     }
 
-    return { items , updateItem ,updateReadyItem}
+    return { items , updateItem ,updateItemReady}
 })
