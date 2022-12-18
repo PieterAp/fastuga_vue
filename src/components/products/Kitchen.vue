@@ -58,7 +58,7 @@ const assignItemConfirmed = () => {
 }
 
 function compare(a, b) {
-  console.log(a.status)
+
   if (b == null) {
     
     if (a.status == 'W') a.status = 'Awaiting Chef'
@@ -79,12 +79,16 @@ function compare(a, b) {
 
 
 socket.on('updateItem', (newItem) => {
-  console.log(newItem)
   let idx = items.value.findIndex((t) => t.id === newItem.id)
   if (idx >= 0) {
     items.value[idx] = newItem
   }
   toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned " + newItem.preparation_by)
+})
+
+socket.on('newItem', (newItem) => {
+  items.value.push(newItem)
+  toast.info("New dish "+newItem.product_name+" was request!")
 })
 
 onMounted(() => {

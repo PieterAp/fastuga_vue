@@ -8,6 +8,7 @@ export const useCartStore = defineStore('cart', () => {
     const items = ref([])
     const userStore = useUserStore()
     const axiosIj = inject('axios')
+    const socket = inject("socket")
 
     const totalItems = computed(() => {
         return items.value.length
@@ -99,7 +100,8 @@ export const useCartStore = defineStore('cart', () => {
             formData.append('price', item.price)
              
             i++
-            await axiosIj.post('ordersItems',formData)
+            const response = await axiosIj.post('ordersItems',formData)
+            socket.emit('newItem', response.data.data)
         });
       
     }
