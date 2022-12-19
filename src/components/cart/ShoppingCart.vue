@@ -3,12 +3,14 @@ import { ref, onMounted, inject } from 'vue'
 import { useCartStore } from "../../stores/cart.js"
 import { useUserStore } from "../../stores/user.js"
 import { usePointsStore } from "../../stores/points.js"
+import { useOrdersStore } from "../../stores/orders.js"
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject('serverBaseUrl')
 const cartStore = useCartStore()
 const userStore = useUserStore()
 const pointsStore = usePointsStore()
+const ordersStore = useOrdersStore()
 const toast = inject("toast")
 const items = ref(null)
 
@@ -35,7 +37,7 @@ function productPhotoUrl(product) {
 
 function getItems() {
   try {
-    items.value = cartStore.getItems()
+    items.value = cartStore.getItems()   
   } catch (error) {
     throw error
   }
@@ -102,7 +104,7 @@ function processPayment() {
   cartStore.processPayment(paymentType.value, reference, cartStore?.totalValue)
     .then(() => {
       toast.success("Payment processed successfully")
-      cartStore.processOrder(paymentType.value, reference, points)
+      ordersStore.processOrder(paymentType.value, reference, points)
         .then((response) => {
           toast.success("Order processed successfully")
           pointsStore.updatePoints(response)
@@ -120,7 +122,18 @@ function processPayment() {
 
 onMounted(() => {
   getItems()
-  calculatePoints()
+  calculatePoints() 
+  if(userStore.user?.default_payment_type=='VISA'){
+    changeType('Visa')
+    paymentReferences.value.card_number = userStore.user?.default_payment_reference
+  }else if(userStore.user?.default_payment_type=='PAYPAL'){
+    changeType('Paypal')
+    paymentReferences.value.email = userStore.user?.default_payment_reference
+  }else if(userStore.user?.default_payment_type=='MBWAY'){
+    changeType('MbWay')
+    paymentReferences.value.phone_number = userStore.user?.default_payment_reference
+  }
+  
 })
 
 </script>
