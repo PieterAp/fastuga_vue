@@ -8,6 +8,7 @@
   const credentials = ref({
         email: '',
         name: '',
+        phone:'',
         password: '',
         password_confirmation: ''
     })
@@ -71,6 +72,23 @@
     <div class="mb-3">
       <div class="mb-3">
         <label
+          for="inputPhone"
+          class="form-label"
+        >Phone</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputPhone"
+          minlength="9"
+          maxlength="9"
+          required
+          v-model="credentials.phone"
+        >
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="mb-3">
+        <label
           for="inputPassword"
           class="form-label"
         >Password</label>
@@ -82,7 +100,7 @@
           v-model="credentials.password"
         >
       </div>
-    </div>
+    </div>    
     <div class="mb-3">
       <div class="mb-3">
         <label
@@ -97,7 +115,7 @@
           v-model="credentials.password_confirmation"
         >
       </div>
-    </div>
+    </div>   
     <div class="mb-3 d-flex justify-content-center">
       <button
         type="button"
