@@ -2,19 +2,20 @@
 import { useRouter, RouterLink, RouterView } from "vue-router"
 import { ref, inject } from "vue"
 import { useUserStore } from "./stores/user.js"
-import { useProjectsStore } from "./stores/projects.js"
 import { useCartStore } from "./stores/cart.js"
+import { usePointsStore } from "./stores/points.js"
 
 const router = useRouter()
 const toast = inject("toast")
 const userStore = useUserStore()
-const projectsStore = useProjectsStore()
 const cartStore = useCartStore()
+const pointsStore = usePointsStore()
 
 const buttonSidebarExpand = ref(null)
 
 const logout = async () => {
   if (await userStore.logout()) {
+    cartStore.clearCart()
     toast.success("User has logged out of the application.")
     clickMenuOption()
     router.push({ name: 'Login' })
@@ -34,8 +35,8 @@ const clickMenuOption = () => {
 <template>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top flex-md-nowrap p-0 shadow">
     <div class="container-fluid">
-      <router-link class="navbar-brand col-md-3 col-lg-2 me-0 px-3" :to="{ name: 'home' }" @click="clickMenuOption">
-        <img src="@/assets/logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top" />
+      <router-link class="navbar-brand col-md-3 col-lg-2 me-0 px-3" :to="{ name: 'Dashboard' }" @click="clickMenuOption">
+        <img src="@/assets/fastuga_logo.png" alt="" width="40" height="34" class="d-inline-block align-text-top" />
         Fastuga
       </router-link>
       <button id="buttonSidebarExpandId" ref="buttonSidebarExpand" class="navbar-toggler" type="button"
@@ -53,6 +54,11 @@ const clickMenuOption = () => {
                 {{cartStore?.totalItems}}
               </button>
             </router-link>
+          </li>
+          <li v-show="userStore.user?.type=='C'" class="nav-item" style="display: flex; align-items: center;">
+            <i class="nav-link">
+                Points: {{pointsStore?.totalPoints}}
+            </i>
           </li>
           <li class="nav-item" v-show="!userStore.user">
             <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
@@ -160,7 +166,7 @@ const clickMenuOption = () => {
                 Public Board
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C' && userStore.user?.type!='ED'">
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Kitchen' }" :to="{ name: 'Kitchen' }"
                 @click="clickMenuOption">
                 <i class="bi bi-list-ul"></i>                                   

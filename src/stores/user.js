@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
     async function loadUser() {
         try {
             const response = await axios.get('users/profile')
-            user.value = response.data
+            user.value = response.data.data
         } catch (error) {
             clearUser()
             throw error
@@ -45,12 +45,10 @@ export const useUserStore = defineStore('user', () => {
             sessionStorage.setItem('token', response.data.access_token)
             await loadUser()
             socket.emit('loggedIn', user.value)
-            //await projectsStore.loadProjects()
             return true
         }
         catch (error) {
             clearUser()
-            projectsStore.clearProjects()
             return false
         }
     }
@@ -95,6 +93,7 @@ export const useUserStore = defineStore('user', () => {
         if (storedToken) {
             axios.defaults.headers.common.Authorization = "Bearer " + storedToken
             await loadUser()
+            socket.emit('loggedIn', user.value)
             return true
         }
         clearUser()
