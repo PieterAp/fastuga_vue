@@ -35,7 +35,7 @@ function productPhotoUrl(product) {
 
 function getItems() {
   try {
-    items.value = cartStore.getItems()
+    items.value = cartStore.getItems()   
   } catch (error) {
     throw error
   }
@@ -120,7 +120,18 @@ function processPayment() {
 
 onMounted(() => {
   getItems()
-  calculatePoints()
+  calculatePoints() 
+  if(userStore.user?.default_payment_type=='VISA'){
+    changeType('Visa')
+    paymentReferences.value.card_number = userStore.user?.default_payment_reference
+  }else if(userStore.user?.default_payment_type=='PAYPAL'){
+    changeType('Paypal')
+    paymentReferences.value.email = userStore.user?.default_payment_reference
+  }else if(userStore.user?.default_payment_type=='MBWAY'){
+    changeType('MbWay')
+    paymentReferences.value.phone_number = userStore.user?.default_payment_reference
+  }
+  
 })
 
 </script>
