@@ -1,10 +1,12 @@
 <script setup>
 import { ref, watch, computed, inject } from "vue";
 import avatarNoneUrl from '@/assets/avatar-none.png'
+import { useUserStore } from "../../stores/user.js"
 
 const serverBaseUrl = inject("serverBaseUrl");
 const selectedValue = ref("EM")
 const selectedValuePM = ref(null)
+const userStore = useUserStore()
 const DFPT = ref(null)
 const DFPR = ref(null)
 
@@ -42,6 +44,7 @@ watch(
   () => props.user,
   (newUser) => {
     editingUser.value = newUser     
+    selectedValue.value = editingUser.value?.type
     if(editingUser.value.default_payment_type){      
       selectedValuePM.value = editingUser.value?.default_payment_type
       DFPT.value = editingUser.value?.default_payment_type
@@ -126,13 +129,14 @@ const cancel = () => {
             v-model="editingUser.default_payment_reference" />
           <field-error-message :errors="errors" fieldName="reference"></field-error-message>
         </div>    
-        <div class=" flex-wrap justify-content-between" v-if="!props.user.id">
+        <div class=" flex-wrap justify-content-between">
           <label for="name" class="col-sm-2 col-form-label">Type</label>
           <div class="col-sm-10">
-            <select class="form-select" id="type" v-model="selectedValue" @change="onChange($event)">
+            <select class="form-select" id="type" v-model="selectedValue" :disabled="userStore.user?.type!='EM'" @change="onChange($event)">
               <option value="EM">Manager</option>
-              <option value="EC">CHEF</option>
-              <option value="ED">DELIVERY</option>
+              <option value="EC">Chef</option>
+              <option value="ED">Delivery</option>
+              <option value="C">Costumer</option>
             </select>
           </div>
         </div>

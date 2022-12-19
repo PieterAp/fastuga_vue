@@ -38,7 +38,7 @@
         user.value = newUser()
         originalValueStr = dataAsString()
       } else {
-        axios.get('users/profile')
+        axios.get('users/'+id)
           .then((response) => {
             user.value = response.data.data
             originalValueStr = dataAsString()
