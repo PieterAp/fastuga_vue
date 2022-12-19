@@ -1,10 +1,8 @@
 import { ref, computed, inject } from 'vue'
 import { defineStore } from 'pinia'
 import avatarNoneUrl from '@/assets/avatar-none.png'
-import { useProjectsStore } from "./projects.js"
 
 export const useUserStore = defineStore('user', () => {
-    const projectsStore = useProjectsStore()
     const axios = inject('axios')
     const socket = inject("socket")
     const serverBaseUrl = inject('serverBaseUrl')
@@ -22,17 +20,17 @@ export const useUserStore = defineStore('user', () => {
         return user.value?.id ?? -1
     })
 
-    async function blockUser(userBlocked){
-        await axios.put('users/' + userBlocked.id, {blocked: !userBlocked.blocked})
+    async function blockUser(userBlocked) {
+        await axios.put('users/' + userBlocked.id, { blocked: !userBlocked.blocked })
             .then((response) => {
                 userBlocked.blocked = response.data.data.blocked
             })
 
-            
-        if(userBlocked.blocked == 1){
+
+        if (userBlocked.blocked == 1) {
             socket.emit('blocked', userBlocked.id)
         }
-        
+
     }
 
     async function loadUser() {
@@ -63,6 +61,21 @@ export const useUserStore = defineStore('user', () => {
                 toast.info(data)
                 logout()
             })
+            socket.on('notifyOrderDelivery', (data) => {
+                toast.info(data)
+            })
+            socket.on('updateUser', (updatedUser) => {
+                //console.log('Someone else has updated the user #' + updatedUser.id)
+                if (user.value?.id == updatedUser.id) {
+                    user.value = updatedUser
+                    toast.info('Your user profile has been changed!')
+                } else {
+                    toast.info(`User profile #${updatedUser.id} (${updatedUser.name}) has changed!`)
+                }
+            })
+            socket.on('updateItem', (newItem) => {               
+                toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned to " + newItem.preparation_by)
+              })
             return true
         }
         catch (error) {
@@ -99,7 +112,6 @@ export const useUserStore = defineStore('user', () => {
         try {
             await axios.post('auth/logout')
             clearUser()
-            projectsStore.clearProjects()
             return true
         } catch (error) {
             return false
@@ -117,21 +129,28 @@ export const useUserStore = defineStore('user', () => {
                 toast.info(data)
                 logout()
             })
+            socket.on('notifyOrderDelivery', (data) => {
+                toast.info(data)
+            })
+            socket.on('updateUser', (updatedUser) => {
+                //console.log('Someone else has updated the user #' + updatedUser.id)
+                if (user.value?.id == updatedUser.id) {
+                    user.value = updatedUser
+                    toast.info('Your user profile has been changed!')
+                } else {
+                    toast.info(`User profile #${updatedUser.id} (${updatedUser.name}) has changed!`)
+                }
+            })
+            socket.on('updateItem', (newItem) => {               
+                toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned to " + newItem.preparation_by)
+              })
             return true
         }
         clearUser()
         return false
     }
 
-    socket.on('updateUser', (updatedUser) => {
-        //console.log('Someone else has updated the user #' + updatedUser.id)
-        if (user.value?.id == updatedUser.id) {
-            user.value = updatedUser
-            toast.info('Your user profile has been changed!')
-        } else {
-            toast.info(`User profile #${updatedUser.id} (${updatedUser.name}) has changed!`)
-        }
-    }) 
+
 
     return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken, blockUser }
 })

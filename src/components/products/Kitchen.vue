@@ -108,7 +108,6 @@ onMounted(() => {
     if (idx >= 0) {
       items.value[idx] = newItem
     }
-    toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned to" + newItem.preparation_by)
   })
 
   socket.on('updateItemReady', (newItem) => {

@@ -76,10 +76,9 @@ export const useCartStore = defineStore('cart', () => {
         return response.data.data
     }  
 
-    function createOrderItems(order) {
+    async function createOrderItems(order) {
 
-        let i = 1
-
+        let i = 1 
         items.value.forEach(async item => {
 
             let formData = new FormData()
@@ -99,7 +98,6 @@ export const useCartStore = defineStore('cart', () => {
         });
       
     }
-
 
     function insertItem(newItem) {
         items.value.push(newItem)

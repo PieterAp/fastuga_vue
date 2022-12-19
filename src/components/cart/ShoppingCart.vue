@@ -3,12 +3,14 @@ import { ref, onMounted, inject } from 'vue'
 import { useCartStore } from "../../stores/cart.js"
 import { useUserStore } from "../../stores/user.js"
 import { usePointsStore } from "../../stores/points.js"
+import { useOrdersStore } from "../../stores/orders.js"
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject('serverBaseUrl')
 const cartStore = useCartStore()
 const userStore = useUserStore()
 const pointsStore = usePointsStore()
+const ordersStore = useOrdersStore()
 const toast = inject("toast")
 const items = ref(null)
 
@@ -102,7 +104,7 @@ function processPayment() {
   cartStore.processPayment(paymentType.value, reference, cartStore?.totalValue)
     .then(() => {
       toast.success("Payment processed successfully")
-      cartStore.processOrder(paymentType.value, reference, points)
+      ordersStore.processOrder(paymentType.value, reference, points)
         .then((response) => {
           toast.success("Order processed successfully")
           pointsStore.updatePoints(response)

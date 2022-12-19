@@ -70,12 +70,10 @@
             router.back()
           })
           .catch((error) => {
-            if (error.response.status == 422) {
-              toast.error('Task was not created due to validation errors!')
+            if (error.response.status == 422) {             
               errors.value = error.response.data.errors
             } else {
-              errors.value = error.response.data.errors
-              //toast.error('Task was not created due to unknown server error!')
+              errors.value = error.response.data.errors       
             }
           })
       }else{
