@@ -59,9 +59,13 @@ export const useUserStore = defineStore('user', () => {
             await loadUser()
             socket.emit('loggedIn', user.value)
             socket.on('blocked', (data) => {
-                console.log(data)
                 toast.info(data)
                 logout()
+            })
+
+            socket.on('deleteUser', (data) => {
+                toast.info(data)
+                //logout()
             })
             return true
         }
@@ -113,9 +117,12 @@ export const useUserStore = defineStore('user', () => {
             await loadUser()
             socket.emit('loggedIn', user.value)
             socket.on('blocked', (data) => {
-                console.log(data)
                 toast.info(data)
                 logout()
+            })
+            socket.on('deleteUser', (data) => {
+                toast.info(data)
+                //logout()
             })
             return true
         }
@@ -131,7 +138,18 @@ export const useUserStore = defineStore('user', () => {
         } else {
             toast.info(`User profile #${updatedUser.id} (${updatedUser.name}) has changed!`)
         }
-    }) 
+    })
+    
+    async function deleteUser(deleteUser) {
+        const response = await axios.delete('users/' + deleteUser.id) .then((response) => {
+            deleteUser.deleted_at = response.data.data.deleted_at
+            
+        })
 
-    return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken, blockUser }
+        socket.emit('deleteUser', deleteUser.id)
+        
+        return response.data.data
+    }
+
+    return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken, blockUser, deleteUser }
 })
