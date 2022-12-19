@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from "../../stores/user.js"
 import UserTable from "./UserTable.vue"
 
 const router = useRouter()
-
+const userStore = useUserStore()
 const axios = inject('axios')
+const toast = inject("toast")
 
 const users = ref([])
 
@@ -31,6 +33,17 @@ const editUser = (user) => {
   router.push({ name: 'User', params: { id: user.id } })
 }
 
+const blockUser = (user) => {
+  userStore.blockUser(user)
+    .then(() => {
+      if (user.blocked == 0){
+        toast.info("The account of " + user.name + " was unlocked")
+      }else{
+        toast.info("The account of  " + user.name + " was locked")
+      }
+  })
+}
+
 onMounted(() => {
   loadUsers()
 })
@@ -48,7 +61,7 @@ onMounted(() => {
           class="bi bi-xs bi-plus-circle"></i>&nbsp; Add User</button>
     </div>
   </div>
-  <user-table :users="users" :showId="false" @edit="editUser"></user-table>
+  <user-table :users="users" :showId="false" @edit="editUser" @block="blockUser"></user-table>
 </template>
 
 <style scoped>

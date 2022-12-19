@@ -33,7 +33,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["edit"])
+const emit = defineEmits(["edit","block"])
 
 const photoFullUrl = (user) => {
   return user.photo_url
@@ -43,6 +43,10 @@ const photoFullUrl = (user) => {
 
 const editClick = (user) => {
   emit("edit", user)
+}
+
+const blockClick = (user) => {
+  emit("block", user)
 }
 
 </script>
@@ -76,7 +80,7 @@ const editClick = (user) => {
             <button
               class="btn btn-xs btn-light"
               @click="blockClick(user)" 
-            ><i class="bi bi-xs bi-x-square-fill"></i>
+            ><i class="bi " :class="{'bi-lock-fill' : !user.blocked,'bi-unlock-fill' : user.blocked }"></i>
             </button>
             <button
               class="btn btn-xs btn-light"            

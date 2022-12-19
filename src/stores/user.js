@@ -22,6 +22,19 @@ export const useUserStore = defineStore('user', () => {
         return user.value?.id ?? -1
     })
 
+    async function blockUser(userBlocked){
+        await axios.put('users/' + userBlocked.id, {blocked: !userBlocked.blocked})
+            .then((response) => {
+                userBlocked.blocked = response.data.data.blocked
+            })
+
+            
+        if(userBlocked.blocked == 1){
+            socket.emit('blocked', userBlocked.id)
+        }
+        
+    }
+
     async function loadUser() {
         try {
             const response = await axios.get('users/profile')
@@ -45,6 +58,11 @@ export const useUserStore = defineStore('user', () => {
             sessionStorage.setItem('token', response.data.access_token)
             await loadUser()
             socket.emit('loggedIn', user.value)
+            socket.on('blocked', (data) => {
+                console.log(data)
+                toast.info(data)
+                logout()
+            })
             return true
         }
         catch (error) {
@@ -94,6 +112,11 @@ export const useUserStore = defineStore('user', () => {
             axios.defaults.headers.common.Authorization = "Bearer " + storedToken
             await loadUser()
             socket.emit('loggedIn', user.value)
+            socket.on('blocked', (data) => {
+                console.log(data)
+                toast.info(data)
+                logout()
+            })
             return true
         }
         clearUser()
@@ -110,5 +133,5 @@ export const useUserStore = defineStore('user', () => {
         }
     }) 
 
-    return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken }
+    return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken, blockUser }
 })
