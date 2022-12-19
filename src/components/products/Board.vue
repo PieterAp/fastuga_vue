@@ -5,6 +5,7 @@ import moment from 'moment';
 const axios = inject('axios')
 const toast = inject("toast")
 const orders = ref(null)
+const socket = inject("socket")
 
 async function loadTickets() {
   try {
@@ -17,6 +18,16 @@ async function loadTickets() {
 
 onMounted(() => {
     loadTickets()
+
+    socket.on('orderReady', (newOrder) => {   
+    if (orders.value == null) {
+      orders.value = []
+      orders.value.push(newOrder)     
+    } else {
+      orders.value.push(newOrder)     
+    }
+    toast.info("Order for ticket #" + newOrder.ticket_number + " is now ready to deliver!")
+  })
 })
 
 </script>
