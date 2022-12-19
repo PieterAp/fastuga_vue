@@ -22,6 +22,10 @@
         email: '',
         password:'',
         type:'',
+        nif:'',
+        phone:'',
+        default_payment_type:'',
+        default_payment_reference:'',
         //photo_url: null
       }
   }
@@ -34,7 +38,7 @@
         user.value = newUser()
         originalValueStr = dataAsString()
       } else {
-        axios.get('users/' + id)
+        axios.get('users/profile')
           .then((response) => {
             user.value = response.data.data
             originalValueStr = dataAsString()

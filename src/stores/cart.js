@@ -54,7 +54,6 @@ export const useCartStore = defineStore('cart', () => {
 
     async function processOrder(paymentType, reference, points) {
 
-
         let formData = new FormData()
         formData.append('total_price', points.total_price)
 
@@ -75,16 +74,7 @@ export const useCartStore = defineStore('cart', () => {
 
         const response = await axiosIj.post('orders', formData)
         return response.data.data
-    }
-
-    async function updatePoints(order) {
-
-        let oldPoints = parseInt(userStore.user.points)
-        let points = parseInt((oldPoints + parseInt(order.points_gained)) - order.points_used_to_pay)
-
-        await axiosIj.put('customers/' + userStore.user.id, { points: points })
-        userStore.user.points = points
-    }
+    }  
 
     function createOrderItems(order) {
 
@@ -100,8 +90,7 @@ export const useCartStore = defineStore('cart', () => {
             formData.append('price', item.price)
              
             i++
-            const response = await axiosIj.post('ordersItems',formData)
-            console.log(response.data.data.product_type)
+            const response = await axiosIj.post('ordersItems',formData)    
 
             if(response.data.data.product_type=="hot dish"){
                 socket.emit('newItem', response.data.data)
@@ -123,5 +112,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue,createOrderItems ,updatePoints, processOrder, processPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue,createOrderItems , processOrder, processPayment, clearCart, getItems, insertItem, deleteItem }
 })

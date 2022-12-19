@@ -2,9 +2,10 @@
 import { ref, watch, computed, onMounted, inject } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import ProductDetail from './ProductDetail.vue';
+import axios from 'axios'
 
 const router = useRouter()
-const axios = inject('axios')
+const baseAPIurl = inject('baseAPIurl')
 const toast = inject('toast')
 
 const newProduct = () => {
@@ -30,7 +31,7 @@ const loadProcuct = (id) => {
     product.value = newProduct()
     originalValueStr = dataAsString()
   } else {
-    axios.get('products/' + id)
+    axios.get(`${baseAPIurl}/products/` + id)
       .then((response) => {
         product.value = response.data.data
         originalValueStr = dataAsString()
@@ -44,7 +45,6 @@ const loadProcuct = (id) => {
 const save = () => {
   errors.value = null
   if (operation.value == 'insert') {
-    
     let config = { headers: { 'Content-Type': 'multipart/form-data' } }
     let formData = new FormData()
     formData.append('name',product.value.name)
@@ -52,7 +52,7 @@ const save = () => {
     formData.append('price',product.value.price)
     formData.append('photo',product.value.photo)
 
-    axios.post('products', formData, config)
+    axios.post(`${baseAPIurl}/products/`, formData, config)
       .then((response) => {
         product.value = response.data.data
         originalValueStr = dataAsString()
@@ -68,8 +68,17 @@ const save = () => {
         }
       })
   } else {
-
-    axios.put('products/' + props.id, product.value)
+    let config = { headers: { 'Content-Type': 'multipart/form-data' } }
+    let formData = new FormData()
+    formData.append('name',product.value.name)
+    formData.append('description',product.value.description)
+    formData.append('price',product.value.price)
+    if (product.value.photo!=undefined) {
+      formData.append('photo',product.value.photo)
+    }
+    formData.append('_method', 'put')
+    
+    axios.post(`${baseAPIurl}/products/` + props.id, formData, config)
       .then((response) => {
         product.value = response.data.data
         originalValueStr = dataAsString()
