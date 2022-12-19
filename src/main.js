@@ -23,7 +23,7 @@ app.provide('axios', axios.create({
     },
   }))
 app.provide('serverBaseUrl', serverBaseUrl)  
-
+app.provide('baseAPIurl',serverBaseUrl+'/api')
 app.provide('socket', io("http://localhost:8080"))
 
 
