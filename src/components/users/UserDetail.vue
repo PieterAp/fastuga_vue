@@ -5,6 +5,9 @@ import avatarNoneUrl from '@/assets/avatar-none.png'
 const serverBaseUrl = inject("serverBaseUrl");
 const selectedValue = ref("EM")
 
+const filename = ref(null)
+const file = ref(null)
+
 const props = defineProps({
   user: {
     type: Object,
@@ -31,6 +34,12 @@ watch(
   },
   { immediate: true }
 )
+
+const onFileChange = (e) => {
+  filename.value = "Selected File: " + e.target.files[0].name;
+  file.value = e.target.files[0];
+  editingUser.value.photo = file;
+}
 
 const photoFullUrl = computed(() => {
   return editingUser.value.photo_url
@@ -111,6 +120,10 @@ const cancel = () => {
           <label class="form-label">Photo</label>
           <div class="form-control text-center">
             <img :src="photoFullUrl" class="w-100" />
+          </div>
+          <label for="photo_url" class="col-form-label">Load new profile photo</label>
+          <div class="custom-file" >
+            <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" @change="onFileChange">
           </div>
         </div>
       </div>

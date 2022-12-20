@@ -1,12 +1,15 @@
 <script setup>
   import { ref, computed, watch, inject } from 'vue'
   import UserDetail from "./UserDetail.vue"
-  import { useRouter, onBeforeRouteLeave } from 'vue-router'  
+  import { useRouter, onBeforeRouteLeave } from 'vue-router' 
+  import axios from 'axios'
+  import { useUserStore } from "../../stores/user.js"
   
   const router = useRouter()  
-  const axios = inject('axios')
+  const baseAPIurl = inject('baseAPIurl')
   const socket = inject("socket")
   const toast = inject('toast')
+  const userStore = useUserStore()
 
   const props = defineProps({
       id: {
@@ -22,10 +25,13 @@
         email: '',
         password:'',
         type:'',
-        //photo_url: null
+        photo: null,
+        photo_url: '',
       }
   }
 
+  axios.defaults.headers.common.Authorization = "Bearer " + sessionStorage.getItem('token')
+  
   let originalValueStr = ''
   const loadUser = (id) => {    
     originalValueStr = ''
@@ -34,7 +40,7 @@
         user.value = newUser()
         originalValueStr = dataAsString()
       } else {
-        axios.get('users/' + id)
+        axios.get(`${baseAPIurl}/users/` + id)
           .then((response) => {
             user.value = response.data.data
             originalValueStr = dataAsString()
@@ -48,15 +54,15 @@
   const save = () => {
       errors.value = null
       if(operation.value == 'insert'){
-        
-        let config = { headers: { 'Content-Type': 'application/json' } }
+        let config = { headers: { 'Content-Type': 'multipart/form-data' } }
         let formData = new FormData()
         formData.append('name',user.value.name)
         formData.append('email',user.value.email)
         formData.append('password',user.value.password)
         formData.append('type',user.value.type)
+        formData.append('photo',user.value.photo)
 
-        axios.post('users', formData, config)
+        axios.post(`${baseAPIurl}/users/`, formData, config)
           .then((response) => {
             
             user.value = response.data.data
@@ -75,12 +81,24 @@
             }
           })
       }else{
-        axios.put('users/' + props.id, user.value)
+        let config = { headers: { 'Content-Type': 'multipart/form-data' } }
+        let formData = new FormData()
+        formData.append('name',user.value.name)
+        formData.append('email',user.value.email)
+        formData.append('password',user.value.password)
+        formData.append('type',user.value.type)
+        if (user.value.photo!=undefined) {
+          formData.append('photo',user.value.photo)
+        }
+        formData.append('_method', 'put')
+
+        axios.post(`${baseAPIurl}/users/` + props.id, formData, config)
         .then((response) => {
           user.value = response.data.data
           socket.emit('updateUser', user.value)
           originalValueStr = dataAsString()
           toast.success('User #' + user.value.id + ' was updated successfully.')
+          userStore.loadUser()
           router.back()
         })
         .catch((error) => {
