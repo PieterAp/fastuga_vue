@@ -7,6 +7,7 @@ export const useOrdersStore = defineStore('order', () => {
     const userStore = useUserStore()
     const axios = inject('axios')   
     const orders = ref(null)
+    const ordersF= ref([])
   
     async function loadOrders() {
         try {
@@ -18,8 +19,28 @@ export const useOrdersStore = defineStore('order', () => {
         }
     }
 
+    async function loadOrdersF() {
+        try {
+            const response = await axios.get('orders')
+            ordersF.value = response.data.data
+        } catch (error) {
+            clearUser()
+            throw error
+        }
+    }
+
     function getOrders() {
         return orders.value
+    }
+
+    const totalOrders = computed(() => {
+        //return orders.value?.length
+        return ordersF.value.filter(( ord => ord.customer_id == userStore.userId)).length
+    })
+
+
+    function getOrdersFilter(){
+        return ordersF.value.filter(( ord => ord.customer_id == userStore.userId))
     }
 
 
@@ -53,5 +74,5 @@ export const useOrdersStore = defineStore('order', () => {
         return response.data.data
     }  
     
-    return {orders , getOrders , loadOrders , finishOrder , processOrder}
+    return {orders , getOrders , loadOrders , finishOrder , processOrder, getOrdersFilter, loadOrdersF, totalOrders}
 })
