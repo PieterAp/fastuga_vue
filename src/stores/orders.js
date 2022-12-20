@@ -1,4 +1,4 @@
-import { inject } from 'vue'
+import { inject , computed ,ref} from 'vue'
 import { defineStore } from 'pinia'
 import { useUserStore } from "./user.js"
 import moment from 'moment';
@@ -6,6 +6,22 @@ import moment from 'moment';
 export const useOrdersStore = defineStore('order', () => {
     const userStore = useUserStore()
     const axios = inject('axios')   
+    const orders = ref(null)
+  
+    async function loadOrders() {
+        try {
+            const response = await axios.get('orders')
+            orders.value = response.data.data
+        } catch (error) {
+            clearUser()
+            throw error
+        }
+    }
+
+    function getOrders() {
+        return orders.value
+    }
+
 
     async function processOrder(paymentType, reference, points) {
 
@@ -37,5 +53,5 @@ export const useOrdersStore = defineStore('order', () => {
         return response.data.data
     }  
     
-    return {finishOrder,processOrder}
+    return {orders , getOrders , loadOrders , finishOrder , processOrder}
 })

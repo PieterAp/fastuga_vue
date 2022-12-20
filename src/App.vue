@@ -158,6 +158,13 @@ const clickMenuOption = () => {
                 Users
               </router-link>
             </li>
+            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+              <router-link class="nav-link" :class="{ active: $route.name === 'Orders' }" :to="{ name: 'Orders' }"
+                @click="clickMenuOption">
+                <i class="bi bi-list-ul"></i>                                   
+                Orders
+              </router-link>
+            </li>
             <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Board' }" :to="{ name: 'Board' }"

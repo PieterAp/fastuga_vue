@@ -13,6 +13,7 @@ import Products from "../components/products/Products.vue"
 import Product from "../components/products/Product.vue"
 import Board from "../components/products/Board.vue"
 import Kitchen from "../components/products/Kitchen.vue"
+import Orders from "../components/orders/Orders.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -96,6 +97,13 @@ const router = createRouter({
       name: 'Users',
       component: Users,
     },
+
+    {
+      path: '/orders',
+      name: 'Orders',
+      component: Orders,
+    },
+
     {
       path: '/users/:id',
       name: 'User',
