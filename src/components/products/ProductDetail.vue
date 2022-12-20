@@ -103,8 +103,7 @@ const datecomp = computed(() => {
           </div>
         </div>
       </div>
-    </div>
-    <label for="photo_url" class="col-sm-2 col-form-label">Photo</label>
+    </div>    
       <div class="custom-file" >
         <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" @change="onFileChange">
       </div>

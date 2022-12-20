@@ -33,7 +33,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["edit"])
+const emit = defineEmits(["edit","block", "delete"])
 
 const photoFullUrl = (user) => {
   return user.photo_url
@@ -43,6 +43,14 @@ const photoFullUrl = (user) => {
 
 const editClick = (user) => {
   emit("edit", user)
+}
+
+const blockClick = (user) => {
+  emit("block", user)
+}
+
+const deleteClick = (user) => {
+    emit('delete', user)
 }
 
 </script>
@@ -59,7 +67,8 @@ const editClick = (user) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="user in users.sort((a, b) => b.type.localeCompare(a.type)).filter(t => t.id!=userStore.user?.id)" :key="user.id">
+      <tr v-for="user in users.sort((a, b) => b.type.localeCompare(a.type)).filter(t => t.id!=userStore.user?.id)" 
+        :key="user.id" :class="{ completed: user.deleted_at }">
         <td v-if="showId" class="align-middle">{{ user.id }}</td>
         <td v-if="showPhoto" class="align-middle">
           <img :src="photoFullUrl(user)" class="rounded-circle img_photo" />
@@ -69,19 +78,28 @@ const editClick = (user) => {
         <td v-if="showType" class="align-middle">{{ user.type == "EM" ? "MANAGER" :  user.type == "EC" ? "CHEF": user.type == "C" ? "CUSTOMER" : user.type == "ED" ? "DELIVERY" : ""}}</td>
         <div class="d-flex justify-content-end">
             <button
+              v-if="!user.deleted_at"
               class="btn btn-xs btn-light"
               @click="editClick(user)"          
             ><i class="bi bi-xs bi-pencil"></i>
             </button>
             <button
+            v-if="!user.deleted_at"
               class="btn btn-xs btn-light"
               @click="blockClick(user)" 
+            ><i class="bi " :class="{'bi-lock-fill' : user.blocked,'bi-unlock-fill' : !user.blocked }"></i>
+            </button>
+            <button
+              v-if="!user.deleted_at"
+              class="btn btn-xs btn-light"
+              @click="deleteClick(user)" 
             ><i class="bi bi-xs bi-x-square-fill"></i>
             </button>
             <button
+              v-if="user.deleted_at"
               class="btn btn-xs btn-light"            
               @click="deleteClick(user)" 
-            ><i class="bi bi-xs bi-x-square-fill"></i>
+            ><i class="bi bi-xs bi-check-square-fill"></i>
             </button>
           </div>
       </tr>
@@ -93,6 +111,11 @@ const editClick = (user) => {
 button {
   margin-left: 3px;
   margin-right: 3px;
+}
+
+.completed {
+  color: red;
+  text-decoration: line-through
 }
 
 .img_photo {

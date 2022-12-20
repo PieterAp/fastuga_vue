@@ -30,8 +30,7 @@ export const useKitchenStore = defineStore('kitchen', () => {
         //verify if order is now ready and if it is update is status and notify delivery
         const orderItemsResponse = await axios.get('orders/'+response.data.data.order_id+'/ordersItems')
 
-        let orderItems = orderItemsResponse.data.data
-        console.log(orderItems)
+        let orderItems = orderItemsResponse.data.data      
         let orderReady = true
 
         orderItems.forEach(orderItem => {

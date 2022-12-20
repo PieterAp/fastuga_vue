@@ -27,6 +27,11 @@
         type:'',
         photo: null,
         photo_url: '',
+        nif:'',
+        phone:'',
+        default_payment_type:'',
+        default_payment_reference:'',
+        //photo_url: null
       }
   }
 
@@ -72,12 +77,10 @@
             router.back()
           })
           .catch((error) => {
-            if (error.response.status == 422) {
-              toast.error('Task was not created due to validation errors!')
+            if (error.response.status == 422) {             
               errors.value = error.response.data.errors
             } else {
-              errors.value = error.response.data.errors
-              //toast.error('Task was not created due to unknown server error!')
+              errors.value = error.response.data.errors       
             }
           })
       }else{
