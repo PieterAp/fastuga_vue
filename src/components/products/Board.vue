@@ -47,6 +47,10 @@ const finishOrderConfirmed = () => {
 onMounted(() => {
   loadTickets()
 
+
+  socket.removeAllListeners("orderReady");
+  socket.removeAllListeners("notifyOrderDelivery");
+
   socket.on('orderReady', (newOrder) => {
     if (orders.value == null) {
       orders.value = []

@@ -101,7 +101,12 @@ function compare(a, b) {
 }
 
 onMounted(() => {
+
   loadHotDishes()
+
+  socket.removeAllListeners("updateItem");
+  socket.removeAllListeners("updateItemReady");
+  socket.removeAllListeners("newItem");
 
   socket.on('updateItem', (newItem) => {
     let idx = items.value.findIndex((t) => t.id === newItem.id)
@@ -128,6 +133,7 @@ onMounted(() => {
       toast.info("New dish " + newItem.product_name + " was request!")
     }
   })
+
 })
 
 </script>
