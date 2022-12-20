@@ -29,14 +29,17 @@ const orderReadyTicket = computed(() => {
 })
 
 function finishOrder(order) {
-  orderToFinish.value = order
-  orderFinishConfirmationDialog.value.show()
+  if(userStore.user?.type=='ED'){
+    orderToFinish.value = order
+    orderFinishConfirmationDialog.value.show()
+  }  
 }
 
 const finishOrderConfirmed = () => {
   ordersStore.finishOrder(orderToFinish.value)
     .then((order) => {    
-      socket.emit('notifyOrderDelivery',order.customer_id,order)     
+      socket.emit('notifyOrderDelivery',order.customer_id,order)    
+      toast.success("Order with ticket #" + order.ticket_number + " is now beeing delivered") 
       loadTickets()
     })
     .catch(() => {
@@ -46,7 +49,6 @@ const finishOrderConfirmed = () => {
 
 onMounted(() => {
   loadTickets()
-
 
   socket.removeAllListeners("orderReady");
   socket.removeAllListeners("notifyOrderDelivery");
@@ -65,7 +67,6 @@ onMounted(() => {
     toast.info(data)
     loadTickets()
   })
-
 
 })
 
@@ -89,7 +90,8 @@ onMounted(() => {
   <div class="row">
     <div v-for="order in orders?.filter(t => t.status == 'R')" class="col-md-3 col-sm-6 col-xs-12"
       @click="finishOrder(order)">
-      <div style="cursor:pointer" class="card">
+      <div :style="[userStore.user?.type == `ED` ? { cursor: 'pointer' } : { cursor: 'arrow' }]"
+      class="card">
         <div class="card-body">
           <h5 class="card-title">{{ '#' + order.ticket_number }}</h5>
           <p class="card-text">{{ moment(String(order.created_at)).format('MM/DD/YYYY hh:mm') }}</p>
