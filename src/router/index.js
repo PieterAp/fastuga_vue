@@ -41,18 +41,21 @@ const router = createRouter({
       name: 'Products',
       component: Products,
     },
+
     {
       path: '/products/new',
       name: 'NewProduct',
       component: Product,
       props: { id: -1 }
     },
+
     {
       path: '/products/:id',
       name: 'Product',
       component: Product,
       props: route => ({ id: parseInt(route.params.id) })
     },
+
     {
       path: '/menu',
       name: 'HotDishes',
@@ -86,6 +89,7 @@ const router = createRouter({
       name: 'Register',
       component: Register
     },
+    
     {
       path: '/password',
       name: 'ChangePassword',
@@ -134,12 +138,13 @@ const router = createRouter({
 
 let handlingFirstRoute = true
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to,next) => {
   const userStore = useUserStore()
   if (handlingFirstRoute) {
     handlingFirstRoute = false
     await userStore.restoreToken()
   }
+
   if ((to.name == 'Login') || (to.name == 'Register')) {
     if (!userStore.user) {
       next()
@@ -149,7 +154,19 @@ router.beforeEach(async (to, from, next) => {
       return
     }
   }
-  if (to.name == 'NewProduct') {
+
+  if ((to.name == 'ChangePassword') ) {
+    if (userStore.user) {
+      next()
+      return
+    } else {
+      router.back()
+      return
+    }
+  }
+  
+  if (to.name == 'NewProduct' || to.name == 'Products' || to.name == 'Product' 
+  || to.name == 'Users' || to.name == 'User' || to.name == 'Orders' || to.name == 'NewUser') {
     if (userStore.user?.type == 'EM') {
       next()
       return
@@ -158,18 +175,8 @@ router.beforeEach(async (to, from, next) => {
       return
     }
   }
-
-  if (to.name == 'NewUser') {
-    if (userStore.user?.type == 'EM') {
-      next()
-      return
-    } else {
-      router.back()
-      return
-    }
-  }
-
-  if ((to.name == 'User') || (to.name == 'Users')) {
+ 
+  if ((to.name == 'User')) {
     if ((userStore.user?.type == 'EM') || (userStore.user?.id == to.params.id)) {
       next()
       return
@@ -177,6 +184,16 @@ router.beforeEach(async (to, from, next) => {
     router.back()
     return
   }
+
+  if ((to.name == 'Kitchen' || to.name == 'Board')) {
+    if ((userStore.user?.type != 'C')) {
+      next()
+      return
+    }
+    router.back()
+    return
+  }
+
   next()
 })
 
