@@ -23,6 +23,8 @@ const newProduct = () => {
   }
 }
 
+axios.defaults.headers.common.Authorization = "Bearer " + sessionStorage.getItem('token')
+
 let originalValueStr = ''
 const loadProcuct = (id) => {
   originalValueStr = ''
