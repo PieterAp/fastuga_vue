@@ -15,7 +15,7 @@ export const usePointsStore = defineStore('points', () => {
 
     async function updatePoints(order) {
         
-        if(userStore.user.type=="C"){
+        if(userStore.user?.type=="C"){
             let oldPoints = parseInt(userStore.user.points)
             let points = parseInt((oldPoints + parseInt(order.points_gained)) - order.points_used_to_pay)
     

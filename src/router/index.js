@@ -156,7 +156,7 @@ const router = createRouter({
 
 let handlingFirstRoute = true
 
-router.beforeEach(async (to,next) => {
+router.beforeEach(async (to,from,next) => {
   const userStore = useUserStore()
   if (handlingFirstRoute) {
     handlingFirstRoute = false
@@ -189,7 +189,7 @@ router.beforeEach(async (to,next) => {
       next()
       return
     } else {
-      back()
+      router.back()
       return
     }
   }
@@ -213,6 +213,7 @@ router.beforeEach(async (to,next) => {
   }
 
   next()
+
 })
 
 export default router

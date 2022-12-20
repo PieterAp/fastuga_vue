@@ -44,7 +44,7 @@ function getItems() {
 }
 
 function calculatePoints() {
-  let points = userStore.user.points
+  let points = userStore.user?.points
   if (points > 10) {
     let i = 10
     let j = 1
