@@ -1,6 +1,7 @@
 import { ref, computed, inject } from 'vue'
 import { defineStore } from 'pinia'
 import avatarNoneUrl from '@/assets/avatar-none.png'
+import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {
     const axios = inject('axios')
@@ -8,6 +9,7 @@ export const useUserStore = defineStore('user', () => {
     const serverBaseUrl = inject('serverBaseUrl')
     const user = ref(null)
     const toast = inject('toast')
+    const router = useRouter()
 
     const userPhotoUrl = computed(() => {
         if (!user.value?.photo_url) {
@@ -63,7 +65,9 @@ export const useUserStore = defineStore('user', () => {
 
             socket.on('deleteUser', (data) => {
                 toast.info(data)
-                //logout()
+                router.push({name: 'Login'})
+
+            
             })
             socket.on('notifyOrderDelivery', (data) => {
                 toast.info(data)
@@ -134,7 +138,8 @@ export const useUserStore = defineStore('user', () => {
             })
             socket.on('deleteUser', (data) => {
                 toast.info(data)
-                //logout()
+                router.push({name: 'Login'})
+
             })
             socket.on('notifyOrderDelivery', (data) => {
                 toast.info(data)
@@ -168,14 +173,10 @@ export const useUserStore = defineStore('user', () => {
     })
     
     async function deleteUser(deleteUser) {
-        const response = await axios.delete('users/' + deleteUser.id) .then((response) => {
-            deleteUser.deleted_at = response.data.data.deleted_at
-            
-        })
+        const response = await axios.delete('users/' + deleteUser.id)
 
-
+        deleteUser.deleted_at = response.data.data.deleted_at
         socket.emit('deleteUser', deleteUser.id)
-        
         return response.data.data
     }
 
