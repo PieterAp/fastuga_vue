@@ -179,5 +179,5 @@ export const useUserStore = defineStore('user', () => {
         return response.data.data
     }
 
-    return { user, userId, userPhotoUrl, login, register, changedPassword, logout, restoreToken, blockUser, deleteUser }
+    return { user, userId, userPhotoUrl, loadUser, login, register, changedPassword, logout, restoreToken, blockUser, deleteUser }
 })
