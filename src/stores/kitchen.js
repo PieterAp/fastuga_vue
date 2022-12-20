@@ -36,13 +36,15 @@ export const useKitchenStore = defineStore('kitchen', () => {
         orderItems.forEach(orderItem => {
             if(orderItem.status!="R"){
                 orderReady = false
-            }
+            }            
         });
 
-        console.log(orderReady)
-        if(orderReady){
+        if(orderReady){                   
             const orderResponse = await axios.put('orders/' + response.data.data.order_id, { status: 'R'})        
-            socket.emit('orderReady', orderResponse.data.data)            
+            socket.emit('orderReady', orderResponse.data.data)   
+            const response2 = await axios.get('chefs/ordersItems')
+            items.value = response2.data.data     
+            console.log("qweqweq")                                  
         }
 
         return items

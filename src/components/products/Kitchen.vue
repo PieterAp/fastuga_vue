@@ -75,7 +75,7 @@ const assignItemReadyConfirmed = () => {
       toast.success("Dish " + assigningReadyItem.value.product_name + " from ticket #" + assigningReadyItem.value.order_ticket_number + " is now marked as ready")
     })
     .catch(() => {
-      toast.error("It was not possible to assign this dish to you!")
+      toast.error("It was not possible to assign this dish as ready!")
     })
 
 }
