@@ -65,7 +65,9 @@
         formData.append('email',user.value.email)
         formData.append('password',user.value.password)
         formData.append('type',user.value.type)
-        formData.append('photo',user.value.photo)
+        if (user.value.photo!=undefined) {
+          formData.append('photo',user.value.photo)
+        }
 
         axios.post(`${baseAPIurl}/users/`, formData, config)
           .then((response) => {
