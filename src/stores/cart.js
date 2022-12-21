@@ -51,6 +51,27 @@ export const useCartStore = defineStore('cart', () => {
         return response.data.data
     }
 
+    async function refundPayment(type, reference, total) {
+
+        var data = JSON.stringify({
+            "type": type.toLowerCase(),
+            "reference": reference,
+            "value": parseFloat(total)
+        });
+
+        var config = {
+            method: 'post',
+            url: 'https://dad-202223-payments-api.vercel.app/api/refunds',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        const response = await axios(config)
+        return response.data.data
+    }
+
     async function createOrderItems(order) {
 
         let i = 1 
@@ -103,5 +124,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue,createOrderItems , processPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue,createOrderItems , processPayment, refundPayment, clearCart, getItems, insertItem, deleteItem }
 })

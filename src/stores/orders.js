@@ -1,11 +1,14 @@
 import { inject , computed ,ref} from 'vue'
 import { defineStore } from 'pinia'
 import { useUserStore } from "./user.js"
+import { useCartStore } from "./cart.js"
 import moment from 'moment';
 
 export const useOrdersStore = defineStore('order', () => {
     const userStore = useUserStore()
-    const axios = inject('axios')   
+    const cartStore = useCartStore()
+    const axios = inject('axios')
+    const socket = inject("socket")
     const orders = ref(null)
   
     async function loadOrders() {
@@ -45,13 +48,30 @@ export const useOrdersStore = defineStore('order', () => {
 
         const response = await axios.post('orders', formData)
         return response.data.data
-    }  
+    }
 
     async function finishOrder(order) {
         const response = await axios.put('orders/' + order.id, { status: 'D',delivered_by:userStore.user.id })
 
         return response.data.data
-    }  
+    }
+
+    async function cancelOrder(order) {
+        try {
+            const responseOrders = await axios.put('orders/' + order.id, { status: 'C'})
+            const responseUser = await axios.get('customers/' + responseOrders.data.data.customer_id)
+
+            const updatedPoints =  responseUser.data.data.points + responseOrders.data.data.points_used_to_pay - responseOrders.data.data.points_gained 
+            await axios.put('customers/' + responseOrders.data.data.customer_id, { points: updatedPoints})
+            
+            cartStore.refundPayment(responseOrders.data.data.payment_type, responseOrders.data.data.payment_reference, responseOrders.data.data.total_paid)
+
+            socket.emit('orderCancelled', responseOrders.data.data.customer_id, updatedPoints)
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
     
-    return {orders , getOrders , loadOrders , finishOrder , processOrder}
+    return {orders , getOrders , loadOrders , finishOrder , processOrder, cancelOrder}
 })
