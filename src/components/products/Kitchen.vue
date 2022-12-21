@@ -140,12 +140,12 @@ onMounted(() => {
 
 <template>
 
-  <Modal v-model:visible="assignConfirmationDialog" title="Confirmation"  :okButton="{text: 'comfirm', onclick: assignItemConfirmed }">
-      <div>{{ `Comfirm assignment for dish ${assigningItem?.product_name}?` }}</div>
+  <Modal v-model:visible="assignConfirmationDialog" title="Confirmation"  :okButton="{text: 'confirm', onclick: assignItemConfirmed }">
+      <div>{{ `confirm assignment for dish ${assigningItem?.product_name}?` }}</div>
   </Modal>
 
-  <Modal v-model:visible="assignReadyConfirmationDialog" title="Confirmation" :okButton="{text: 'comfirm', onclick: assignItemReadyConfirmed}">
-      <div>{{ `Comfirm dish ${assigningReadyItem?.product_name} for ticket # ${assigningReadyItem?.order_ticket_number} is ready?` }}</div>
+  <Modal v-model:visible="assignReadyConfirmationDialog" title="Confirmation" :okButton="{text: 'confirm', onclick: assignItemReadyConfirmed}">
+      <div>{{ `confirm dish ${assigningReadyItem?.product_name} for ticket # ${assigningReadyItem?.order_ticket_number} is ready?` }}</div>
   </Modal>
 
   <div class="d-flex justify-content-between">
