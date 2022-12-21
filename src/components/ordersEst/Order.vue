@@ -7,13 +7,6 @@ const router = useRouter()
 const axios = inject('axios')
 const toast = inject('toast')
 
-const newOrder = () => {
-  return {
-    id: null,
-    total_price: null,
-  }
-}
-
 let originalValueStr = ''
 const loadOrder = (id) => {
   originalValueStr = ''
@@ -26,7 +19,6 @@ const loadOrder = (id) => {
       .catch((error) => {
         console.log(error)
       })
-  
 }
 
 const save = () => {
@@ -84,11 +76,9 @@ const props = defineProps({
   }
 })
 
-const order = ref(null)
+const order = ref()
 const errors = ref(null)
 const confirmationLeaveDialog = ref(null)
-
-const operation = computed(() => (!props.id || props.id < 0) ? 'insert' : 'update')
 
 watch(
   () => props.id,
