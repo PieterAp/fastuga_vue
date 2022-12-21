@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from "../stores/user.js"
+import { useCartStore } from "../stores/cart.js"
+
 
 import Dashboard from "../components/Dashboard.vue"
 import Login from "../components/auth/Login.vue"
@@ -158,6 +160,7 @@ let handlingFirstRoute = true
 
 router.beforeEach(async (to,from,next) => {
   const userStore = useUserStore()
+  const cartStore = useCartStore()
   if (handlingFirstRoute) {
     handlingFirstRoute = false
     await userStore.restoreToken()
@@ -165,6 +168,7 @@ router.beforeEach(async (to,from,next) => {
 
   if ((to.name == 'Login') || (to.name == 'Register')) {
     if (!userStore.user) {
+      cartStore.clearCart()
       next()
       return
     } else {

@@ -4,6 +4,7 @@ import { useCartStore } from "../../stores/cart.js"
 import { useUserStore } from "../../stores/user.js"
 import { usePointsStore } from "../../stores/points.js"
 import { useOrdersStore } from "../../stores/orders.js"
+import { useRouter } from 'vue-router'
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject('serverBaseUrl')
@@ -11,6 +12,7 @@ const cartStore = useCartStore()
 const userStore = useUserStore()
 const pointsStore = usePointsStore()
 const ordersStore = useOrdersStore()
+const router = useRouter()
 const toast = inject("toast")
 const items = ref(null)
 
@@ -110,8 +112,15 @@ function processPayment() {
           pointsStore.updatePoints(response)
           cartStore.createOrderItems(response)
         })
+        .then(()=>{
+          cartStore.clearCart()
+          router.push({ name: 'Dashboard' })
+        })
         .catch(() => {
           toast.error("It was not possible to process your order!")
+          toast.error("Try again later!")
+          cartStore.clearCart()
+          router.push({ name: 'Dashboard' })
         })
     })
     .catch(() => {
