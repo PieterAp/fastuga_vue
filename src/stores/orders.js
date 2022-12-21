@@ -60,7 +60,7 @@ export const useOrdersStore = defineStore('order', () => {
         formData.append('payment_type', paymentType)
         formData.append('payment_reference', reference)
 
-        if (userStore.user) {
+        if (userStore.user?.type == 'C') {
             formData.append('customer_id', userStore.user.customer_id)
         }
 
