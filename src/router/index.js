@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from "../stores/user.js"
+import { useCartStore } from "../stores/cart.js"
+
 
 import Dashboard from "../components/Dashboard.vue"
 import Login from "../components/auth/Login.vue"
@@ -14,6 +16,11 @@ import Product from "../components/products/Product.vue"
 import Board from "../components/products/Board.vue"
 import Kitchen from "../components/products/Kitchen.vue"
 import Orders from "../components/orders/Orders.vue"
+import MyOrders from "../components/ordersEst/orders.vue"
+import OrderEst from "../components/ordersEst/order.vue"
+
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -109,6 +116,19 @@ const router = createRouter({
     },
 
     {
+      path: '/myOrders',
+      name: 'MyOrders',
+      component: MyOrders,
+    },
+
+    {
+      path: '/myOrders/:id',
+      name: 'Order',
+      component: OrderEst,
+      props: route => ({ id: parseInt(route.params.id) })
+    },
+
+    {
       path: '/users/:id',
       name: 'User',
       component: User,
@@ -140,6 +160,7 @@ let handlingFirstRoute = true
 
 router.beforeEach(async (to,from,next) => {
   const userStore = useUserStore()
+  const cartStore = useCartStore()
   if (handlingFirstRoute) {
     handlingFirstRoute = false
     await userStore.restoreToken()
@@ -147,6 +168,7 @@ router.beforeEach(async (to,from,next) => {
 
   if ((to.name == 'Login') || (to.name == 'Register')) {
     if (!userStore.user) {
+      cartStore.clearCart()
       next()
       return
     } else {
@@ -186,12 +208,19 @@ router.beforeEach(async (to,from,next) => {
   }
 
   if ((to.name == 'Kitchen' || to.name == 'Board')) {
+    
+    if (!userStore.user) {
+      router.back()
+      return
+    }
+    
     if ((userStore.user?.type != 'C')) {
       next()
       return
     }
     router.back()
     return
+    
   }
 
   next()

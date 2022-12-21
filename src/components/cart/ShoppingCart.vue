@@ -4,6 +4,7 @@ import { useCartStore } from "../../stores/cart.js"
 import { useUserStore } from "../../stores/user.js"
 import { usePointsStore } from "../../stores/points.js"
 import { useOrdersStore } from "../../stores/orders.js"
+import { useRouter } from 'vue-router'
 import avatarNoneUrl from '@/assets/avatar-none.png'
 
 const serverBaseUrl = inject('serverBaseUrl')
@@ -11,6 +12,7 @@ const cartStore = useCartStore()
 const userStore = useUserStore()
 const pointsStore = usePointsStore()
 const ordersStore = useOrdersStore()
+const router = useRouter()
 const toast = inject("toast")
 const items = ref(null)
 
@@ -110,8 +112,15 @@ function processPayment() {
           pointsStore.updatePoints(response)
           cartStore.createOrderItems(response)
         })
+        .then(()=>{
+          cartStore.clearCart()
+          router.push({ name: 'Dashboard' })
+        })
         .catch(() => {
           toast.error("It was not possible to process your order!")
+          toast.error("Try again later!")
+          cartStore.clearCart()
+          router.push({ name: 'Dashboard' })
         })
     })
     .catch(() => {
@@ -184,11 +193,11 @@ onMounted(() => {
                 <div class="col-lg-6 px-5 py-4">
                   <h3 class="mb-5 pt-2 text-center fw-bold text-uppercase">Payment</h3>
                   <div class="d-flez justify-content-center">
-                    <img src="src\assets\8666255_cc_visa_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8666255_cc_visa_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('Visa')">
-                    <img src="src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('Paypal')">
-                    <img src="src\assets\8666255_cc_MBway_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8666255_cc_MBway_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('MbWay')">
                   </div>
                   <form v-show="paymentType == 'Visa'" class="mb-5">
