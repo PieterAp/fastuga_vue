@@ -166,7 +166,7 @@ router.beforeEach(async (to,from,next) => {
   }
   
   if (to.name == 'NewProduct' || to.name == 'Products' || to.name == 'Product' 
-  || to.name == 'Users' || to.name == 'User' || to.name == 'Orders' || to.name == 'NewUser') {
+  || to.name == 'Users' || to.name == 'Orders' || to.name == 'NewUser') {
     if (userStore.user?.type == 'EM') {
       next()
       return
