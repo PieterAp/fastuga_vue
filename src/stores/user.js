@@ -60,7 +60,8 @@ export const useUserStore = defineStore('user', () => {
             socket.emit('loggedIn', user.value)
             socket.on('blocked', (data) => {
                 toast.info(data)
-                logout()
+                clearUser()
+                router.push({name: 'Login'})
             })
 
             socket.on('deleteUser', (data) => {
@@ -133,7 +134,8 @@ export const useUserStore = defineStore('user', () => {
             socket.emit('loggedIn', user.value)
             socket.on('blocked', (data) => {
                 toast.info(data)
-                logout()
+                clearUser()
+                router.push({name: 'Login'})
             })
             socket.on('deleteUser', (data) => {
                 toast.info(data)
