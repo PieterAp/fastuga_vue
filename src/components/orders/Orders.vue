@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted , computed} from 'vue'
+import { ref, onMounted, computed, inject} from 'vue'
 import OrdersTable from "./OrdersTable.vue"
 import { useOrdersStore } from "../../stores/orders.js"
 
 const ordersStore = useOrdersStore()
+const curOrderCancel = ref(null)
+const cancelDialog = ref(null)
+const toast = inject("toast")
 
 const loadOrders = () => {
   ordersStore.loadOrders()
@@ -16,11 +19,21 @@ const Orders = computed(()=>{
     return ordersStore.getOrders()
   })
 
+const cancelOrder = (order) => {
+  curOrderCancel.value = order
+  cancelDialog.value.show()
+}
 
-  const cancelOrder = (order) => {
-    //Do stuff
-    console.log("CANCEL " + order.id)
-  }
+const cancelConfirmed = () => {
+  ordersStore.cancelOrder(curOrderCancel.value)
+    .then(() => {
+      loadOrders()
+      toast.info("Order was canceled and client was refunded")
+    })
+    .catch(() => {
+      toast.error("It was not possible to cancel this order!")
+    })
+}
 
 onMounted(() => {
     loadOrders()
@@ -29,6 +42,13 @@ onMounted(() => {
 </script>
 
 <template> 
+  <confirmation-dialog
+    ref="cancelDialog"
+    confirmationBtn="Cancel order"
+    cancelBtn="Cancel operation"
+    :msg="`Are you sure you want to cancel this order? Client will get their points and payment refunded!`"
+    @confirmed="cancelConfirmed"
+  ></confirmation-dialog>
   <div class="d-flex justify-content-between">
     <div class="mx-2">
       <h3 class="mt-4">Orders</h3>
