@@ -88,7 +88,6 @@
         let formData = new FormData()
         formData.append('name',user.value.name)
         formData.append('email',user.value.email)
-        formData.append('password',user.value.password)
         formData.append('type',user.value.type)
         if (user.value.photo!=undefined) {
           formData.append('photo',user.value.photo)
