@@ -43,8 +43,7 @@ export const useKitchenStore = defineStore('kitchen', () => {
             const orderResponse = await axios.put('orders/' + response.data.data.order_id, { status: 'R'})        
             socket.emit('orderReady', orderResponse.data.data)   
             const response2 = await axios.get('chefs/ordersItems')
-            items.value = response2.data.data     
-            console.log("qweqweq")                                  
+            items.value = response2.data.data                                              
         }
 
         return items
