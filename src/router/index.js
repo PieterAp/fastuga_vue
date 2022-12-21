@@ -16,8 +16,8 @@ import Product from "../components/products/Product.vue"
 import Board from "../components/products/Board.vue"
 import Kitchen from "../components/products/Kitchen.vue"
 import Orders from "../components/orders/Orders.vue"
-import MyOrders from "../components/ordersEst/Orders.vue"
-import OrderEst from "../components/ordersEst/Order.vue"
+import MyOrders from "../components/ordersEst/orders.vue"
+import OrderEst from "../components/ordersEst/order.vue"
 
 
 
@@ -208,12 +208,19 @@ router.beforeEach(async (to,from,next) => {
   }
 
   if ((to.name == 'Kitchen' || to.name == 'Board')) {
+    
+    if (!userStore.user) {
+      router.back()
+      return
+    }
+    
     if ((userStore.user?.type != 'C')) {
       next()
       return
     }
     router.back()
     return
+    
   }
 
   next()
