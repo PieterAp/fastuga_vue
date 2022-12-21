@@ -14,8 +14,12 @@ import "bootstrap-icons/font/bootstrap-icons.css"
 import "bootstrap"
 
 const app = createApp(App)
+const apiDomain = import.meta.env.VITE_API_DOMAIN
+const wsConnection = import.meta.env.VITE_WS_CONNECTION
 
 const serverBaseUrl = 'http://localhost'
+//server config
+//const serverBaseUrl = apiDomain
 app.provide('axios', axios.create({
     baseURL: serverBaseUrl + '/api',
     headers: {
@@ -25,6 +29,8 @@ app.provide('axios', axios.create({
 app.provide('serverBaseUrl', serverBaseUrl)  
 app.provide('baseAPIurl',serverBaseUrl+'/api')
 app.provide('socket', io("http://localhost:8080"))
+//server config
+//app.provide('socket',io(wsConnection))
 
 
 app.use(Toaster, {
