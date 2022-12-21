@@ -184,11 +184,11 @@ onMounted(() => {
                 <div class="col-lg-6 px-5 py-4">
                   <h3 class="mb-5 pt-2 text-center fw-bold text-uppercase">Payment</h3>
                   <div class="d-flez justify-content-center">
-                    <img src="src\assets\8666255_cc_visa_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8666255_cc_visa_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('Visa')">
-                    <img src="src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8546928_cc_paypal_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('Paypal')">
-                    <img src="src\assets\8666255_cc_MBway_icon.png" class="img-fluid-small"
+                    <img src="\src\assets\8666255_cc_MBway_icon.png" class="img-fluid-small"
                       alt="Generic placeholder image" @click="changeType('MbWay')">
                   </div>
                   <form v-show="paymentType == 'Visa'" class="mb-5">
