@@ -19,7 +19,7 @@ export const usePointsStore = defineStore('points', () => {
             let oldPoints = parseInt(userStore.user.points)
             let points = parseInt((oldPoints + parseInt(order.points_gained)) - order.points_used_to_pay)
     
-            await axiosIj.put('customers/' + userStore.user.id, { points: points })
+            await axiosIj.put('customers/' + userStore.user.customer_id, { points: points })
             userStore.user.points = points
         }
     

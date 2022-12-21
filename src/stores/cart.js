@@ -2,7 +2,6 @@ import { ref, computed, inject } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useUserStore } from "./user.js"
-import moment from 'moment';
 
 export const useCartStore = defineStore('cart', () => {
     const items = ref([])
@@ -52,30 +51,6 @@ export const useCartStore = defineStore('cart', () => {
         return response.data.data
     }
 
-    async function processOrder(paymentType, reference, points) {
-
-        let formData = new FormData()
-        formData.append('total_price', points.total_price)
-
-        formData.append('total_paid', points.total_paid)
-        formData.append('total_paid_with_points', points.total_paid_with_points)
-        formData.append('points_gained', points.points_gained)
-        formData.append('points_used_to_pay', points.points_used_to_pay)
-
-        const current = moment(new Date()).format('YYYY-MM-DD')
-
-        formData.append('date', current)
-        formData.append('payment_type', paymentType)
-        formData.append('payment_reference', reference)
-
-        if (userStore.user) {
-            formData.append('customer_id', userStore.user.id)
-        }
-
-        const response = await axiosIj.post('orders', formData)
-        return response.data.data
-    }  
-
     async function createOrderItems(order) {
 
         let i = 1 
@@ -94,7 +69,25 @@ export const useCartStore = defineStore('cart', () => {
             if(response.data.data.product_type=="hot dish"){
                 socket.emit('newItem', response.data.data)
             }
-           
+
+            const orderItemsResponse = await axiosIj.get('orders/'+response.data.data.order_id+'/ordersItems')
+
+            let orderItems = orderItemsResponse.data.data      
+            let orderReady = true
+    
+            orderItems.forEach(orderItem => {
+                if(orderItem.status!="R"){
+                    orderReady = false
+                }            
+            });
+    
+            if(orderReady){                   
+                const orderResponse = await axiosIj.put('orders/' + response.data.data.order_id, { status: 'R'})        
+                socket.emit('orderReady', orderResponse.data.data)   
+                const response2 = await axiosIj.get('chefs/ordersItems')
+                items.value = response2.data.data                                                   
+            }
+               
         });
       
     }
@@ -110,5 +103,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue,createOrderItems , processOrder, processPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue,createOrderItems , processPayment, clearCart, getItems, insertItem, deleteItem }
 })

@@ -61,7 +61,7 @@ export const useOrdersStore = defineStore('order', () => {
         formData.append('payment_reference', reference)
 
         if (userStore.user) {
-            formData.append('customer_id', userStore.user.id)
+            formData.append('customer_id', userStore.user.customer_id)
         }
 
         const response = await axios.post('orders', formData)
