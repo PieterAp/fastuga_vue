@@ -21,7 +21,7 @@ export const useOrdersStore = defineStore('order', () => {
 
     async function loadOrdersF() {
         try {
-            const response = await axios.get('orders')
+            const response = await axios.get('orders/customers/' + userStore.customerId )
             ordersF.value = response.data.data
         } catch (error) {
             clearUser()
@@ -30,17 +30,16 @@ export const useOrdersStore = defineStore('order', () => {
     }
 
     function getOrders() {
-        return orders.value
+        return orders
     }
 
     const totalOrders = computed(() => {
-        //return orders.value?.length
-        return ordersF.value.filter(( ord => ord.customer_id == userStore.userId)).length
+        return ordersF.value.length
     })
 
 
     function getOrdersFilter(){
-        return ordersF.value.filter(( ord => ord.customer_id == userStore.userId))
+        return ordersF.value
     }
 
 

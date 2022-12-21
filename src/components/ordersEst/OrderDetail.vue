@@ -65,6 +65,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <div>
   <form class="row g-3 needs-validation" novalidate @submit.prevent="save">
     <hr />
     <div class=" flex-wrap justify-content-between">
@@ -102,7 +103,8 @@ onMounted(() => {
     </thead>
     <tbody> 
       <tr
-        v-for="orderItem in order_items?.filter(t => t.order_id==editingOrder.id)"
+      
+        v-for="orderItem in order_items"
         :key="orderItem.id">
         <td>{{ orderItem.product_name }}</td>
         <td>{{ orderItem.price }}</td>
@@ -118,6 +120,7 @@ onMounted(() => {
                       || orderItem.status == "W" ? orderItem.status = "Waiting"
                 : ""
           }}</td>
+        
       </tr>
       
     </tbody>
@@ -125,5 +128,5 @@ onMounted(() => {
   <div class="mb-3 d-flex justify-content-end">
       <button type="button" class="btn btn-dark px-5" @click="cancel">Cancel</button>
   </div>
- 
+  </div>
 </template>
