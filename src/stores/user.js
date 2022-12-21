@@ -62,12 +62,16 @@ export const useUserStore = defineStore('user', () => {
                 toast.info(data)
                 clearUser()
                 router.push({name: 'Login'})
+                //leave so that shows only one toast
+                socket.leave()
             })
 
             socket.on('deleteUser', (data) => {
                 toast.info(data)
                 clearUser()
                 router.push({name: 'Login'})
+                //leave so that shows only one toast
+                socket.leave()
             })
             socket.on('notifyOrderDelivery', (data) => {
                 toast.info(data)
