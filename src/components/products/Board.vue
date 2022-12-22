@@ -52,6 +52,7 @@ onMounted(() => {
 
   socket.removeAllListeners("orderReady");
   socket.removeAllListeners("notifyOrderDelivery");
+  socket.removeAllListeners("orderCancelled");
 
   socket.on('orderReady', (newOrder) => {
     if (orders.value == null) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, inject} from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import OrdersTable from "./OrdersTable.vue"
 import { useOrdersStore } from "../../stores/orders.js"
 
@@ -7,6 +7,7 @@ const ordersStore = useOrdersStore()
 const curOrderCancel = ref(null)
 const cancelDialog = ref(null)
 const toast = inject("toast")
+const socket = inject("socket")
 
 const loadOrders = () => {
   ordersStore.loadOrders()
@@ -15,9 +16,9 @@ const loadOrders = () => {
     })
 }
 
-const Orders = computed(()=>{
-    return ordersStore.getOrders()
-  })
+const Orders = computed(() => {
+  return ordersStore.getOrders()
+})
 
 const cancelOrder = (order) => {
   curOrderCancel.value = order
@@ -36,30 +37,30 @@ const cancelConfirmed = () => {
 }
 
 onMounted(() => {
+  loadOrders()
+
+  socket.removeAllListeners("newOrder");
+  socket.on('newOrder', (order) => {
     loadOrders()
+  })
+
 })
 
 </script>
 
-<template> 
-  <confirmation-dialog
-    ref="cancelDialog"
-    confirmationBtn="Cancel order"
-    cancelBtn="Cancel operation"
+<template>
+  <confirmation-dialog ref="cancelDialog" confirmationBtn="Cancel order" cancelBtn="Cancel operation"
     :msg="`Are you sure you want to cancel this order? Client will get their points and payment refunded!`"
-    @confirmed="cancelConfirmed"
-  ></confirmation-dialog>
+    @confirmed="cancelConfirmed"></confirmation-dialog>
   <div class="d-flex justify-content-between">
     <div class="mx-2">
       <h3 class="mt-4">Orders</h3>
-    </div>    
+    </div>
   </div>
   <hr>
-  <div class="mb-3 d-flex justify-content-between flex-wrap">    
+  <div class="mb-3 d-flex justify-content-between flex-wrap">
   </div>
-  <orders-table 
-    :orders="Orders"
-    @cancel="cancelOrder">
+  <orders-table :orders="Orders" @cancel="cancelOrder">
   </orders-table>
 </template>
 
