@@ -86,7 +86,7 @@ const cancel = () => {
 </script>
 
 <template>
-  <form class="row g-3 needs-validation" novalidate @submit.prevent="save">
+  <form class="row g-3 needs-validation" @submit.prevent="save">
     <h3 class="mt-5 mb-3">User #{{ editingUser.id }}</h3>
     <hr />
     <div class="d-flex flex-wrap justify-content-between">
@@ -124,7 +124,7 @@ const cancel = () => {
         <div class="flex-wrap justify-content-between" v-if="props.user.type=='C'">
           <label for="name" class="col-sm-2 col-form-label">Default Payment method</label>
           <div class="col-sm-10">
-            <select class="form-select" id="default_payment_type" v-model="selectedValuePM" @change="onChangePM($event)">
+            <select class="form-select" id="default_payment_type" v-model="selectedValuePM" required @change="onChangePM($event)">
               <option value="">Choose...</option>
               <option value="VISA">Visa</option>
               <option value="PAYPAL">Paypal</option>
@@ -134,14 +134,14 @@ const cancel = () => {
         </div>   
         <div class="mb-3" v-if="props.user.type=='C'">
           <label for="inputReference" class="form-label">Default payment reference</label>
-          <input type="text" class="form-control" id="inputReference" placeholder="Reference"
+          <input type="text" class="form-control" id="inputReference" placeholder="Reference" required
             v-model="editingUser.default_payment_reference" />
           <field-error-message :errors="errors" fieldName="reference"></field-error-message>
         </div>    
         <div class=" flex-wrap justify-content-between">
           <label for="name" class="col-sm-2 col-form-label">Type</label>
           <div class="col-sm-10">
-            <select class="form-select" id="type" v-model="selectedValue" :disabled="userStore.user?.type!='EM'" @change="onChange($event)">
+            <select class="form-select" id="type" v-model="selectedValue" :disabled="userStore.user?.type!='EM'" required @change="onChange($event)">
               <option value="EM">Manager</option>
               <option value="EC">Chef</option>
               <option value="ED">Delivery</option>
@@ -164,7 +164,7 @@ const cancel = () => {
       </div>
     </div>
     <div class="mb-3 d-flex justify-content-end">
-      <button type="button" class="btn btn-primary px-5" @click="save">Save</button>
+      <button type="submit" class="btn btn-primary px-5">Save</button>
       <button type="button" class="btn btn-light px-5" @click="cancel">Cancel</button>
     </div>
   </form>

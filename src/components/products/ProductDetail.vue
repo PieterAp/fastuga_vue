@@ -68,19 +68,19 @@ const datecomp = computed(() => {
 </script>
 
 <template>
-  <form class="row g-3 needs-validation" novalidate @submit.prevent="save">
+  <form class="row g-3 needs-validation" @submit.prevent="save">
     <h3 class="mt-5 mb-3">{{ productTitle }}</h3>
     <hr />
     <div class=" flex-wrap justify-content-between">
       <label class="col-sm-2 col-form-label">Name</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="name" placeholder="Name of product" v-model="editingProduct.name" />
+        <input type="text" class="form-control" id="name" placeholder="Name of product" required v-model="editingProduct.name" />
       </div>
     </div>
     <div class=" flex-wrap justify-content-between">
       <label for="name" class="col-sm-2 col-form-label">Type</label>
       <div class="col-sm-10">
-        <select class="form-select" id="type" v-model="editingProduct.type">
+        <select class="form-select" id="type" required v-model="editingProduct.type">
           <option value="hot dish">Hot dish</option>
           <option value="cold dish">Cold dish</option>
           <option value="drink">Drink</option>
@@ -91,7 +91,7 @@ const datecomp = computed(() => {
     </div>
     <label for="name" class="col-sm-2 col-form-label">Description</label>
     <div class="col-sm-10 ">
-      <textarea type="text" class="form-control" id="description" placeholder="Description of product"
+      <textarea type="text" class="form-control" id="description" placeholder="Description of product" required
         v-model="editingProduct.description"></textarea>
     </div>
     <div class="col-sm-10 " v-if="editingProduct?.photo_url">
@@ -105,17 +105,17 @@ const datecomp = computed(() => {
       </div>
     </div>    
       <div class="custom-file" >
-        <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" @change="onFileChange">
+        <input type="file" name="filename" class="custom-file-input" id="inputFileUpload" required @change="onFileChange">
       </div>
     <label for="price" class="col-sm-2 col-form-label">Price</label>
     <div class="col-sm-10 ">
-      <input type="text" class="form-control" id="price" placeholder="Price of product"
+      <input type="text" class="form-control" id="price" placeholder="Price of product" required
         v-model="editingProduct.price" />
     </div>
     <field-error-message :errors="errors" fieldName="name"></field-error-message>
 
     <div class="mb-3 d-flex justify-content-end">
-      <button type="button" class="btn btn-primary px-5" @click="save">Save</button>
+      <button type="submit" class="btn btn-primary px-5">Save</button>
       <button type="button" class="btn btn-light px-5" @click="cancel">Cancel</button>
     </div>
   </form>
