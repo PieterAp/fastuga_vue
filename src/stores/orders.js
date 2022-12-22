@@ -67,6 +67,9 @@ export const useOrdersStore = defineStore('order', () => {
         }
 
         const response = await axios.post('orders', formData)
+
+        socket.emit('newOrder', response.data.data)
+
         return response.data.data
     }
 

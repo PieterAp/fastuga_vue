@@ -107,6 +107,7 @@ onMounted(() => {
   socket.removeAllListeners("updateItem");
   socket.removeAllListeners("updateItemReady");
   socket.removeAllListeners("newItem");
+  socket.removeAllListeners("orderCancelled");
 
   socket.on('updateItem', (newItem) => {
     let idx = items.value.findIndex((t) => t.id === newItem.id)
