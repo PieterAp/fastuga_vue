@@ -104,13 +104,11 @@ export const useCartStore = defineStore('cart', () => {
                 }
             });
 
+            if (orderReady) {
+                const orderResponse = await axiosIj.put('orders/' + order.id, { status: 'R' })
+                socket.emit('orderReady', orderResponse.data.data)
+            }
         })
-
-        if (orderReady) {
-            const orderResponse = await axiosIj.put('orders/' + order.id, { status: 'R' })
-            socket.emit('orderReady', orderResponse.data.data)
-        }
-
     }
 
     function insertItem(newItem) {
