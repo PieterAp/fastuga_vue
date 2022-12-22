@@ -116,16 +116,24 @@ const router = createRouter({
     },
 
     {
-      path: '/myOrders',
-      name: 'MyOrders',
-      component: MyOrders,
-    },
-
-    {
-      path: '/myOrders/:id',
+      path: '/orders/:id/ordersItems',
       name: 'Order',
       component: OrderEst,
       props: route => ({ id: parseInt(route.params.id) })
+    },
+
+    {
+      path: '/orders/customers/:id',
+      name: 'myOrders',
+      component: MyOrders,
+      props: route => ({ id: parseInt(route.params.id) })
+    },
+
+    {
+      path: '/customers/:id1/orders/:id',
+      name: 'MyordersD',
+      component: OrderEst,
+      props: route => ({ id1: parseInt(route.params.id), id: parseInt(route.params.id) })
     },
 
     {

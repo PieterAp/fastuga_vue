@@ -74,41 +74,43 @@ export const useCartStore = defineStore('cart', () => {
 
     async function createOrderItems(order) {
 
-        let i = 1 
+        let i = 1
+        let orderReady = true
+
         items.value.forEach(async item => {
 
             let formData = new FormData()
             formData.append('order_id', order.id)
-    
-            formData.append('order_local_number',i)
+
+            formData.append('order_local_number', i)
             formData.append('product_id', item.id)
             formData.append('price', item.price)
-             
-            i++
-            const response = await axiosIj.post('ordersItems',formData)    
 
-            if(response.data.data.product_type=="hot dish"){
+            i++
+            const response = await axiosIj.post('ordersItems', formData)
+
+            if (response.data.data.product_type == "hot dish") {
                 socket.emit('newItem', response.data.data)
             }
 
-            const orderItemsResponse = await axiosIj.get('orders/'+response.data.data.order_id+'/ordersItems')
+            const orderItemsResponse = await axiosIj.get('orders/' + response.data.data.order_id + '/ordersItems')
 
-            let orderItems = orderItemsResponse.data.data      
-            let orderReady = true
-    
+            let orderItems = orderItemsResponse.data.data
+            orderReady = true
+
             orderItems.forEach(orderItem => {
-                if(orderItem.status!="R"){
+                if (orderItem.status != "R") {
                     orderReady = false
-                }            
+                }
             });
-    
-            if(orderReady){                   
-                const orderResponse = await axiosIj.put('orders/' + response.data.data.order_id, { status: 'R'})        
-                socket.emit('orderReady', orderResponse.data.data)                   
-            }
-               
-        });
-      
+
+        })
+
+        if (orderReady) {
+            const orderResponse = await axiosIj.put('orders/' + order.id, { status: 'R' })
+            socket.emit('orderReady', orderResponse.data.data)
+        }
+
     }
 
     function insertItem(newItem) {
@@ -122,5 +124,5 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    return { items, totalItems, totalValue,createOrderItems , processPayment, refundPayment, clearCart, getItems, insertItem, deleteItem }
+    return { items, totalItems, totalValue, createOrderItems, processPayment, refundPayment, clearCart, getItems, insertItem, deleteItem }
 })

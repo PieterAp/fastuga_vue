@@ -36,6 +36,7 @@ export const useProductsStore = defineStore('products', () => {
 
     async function deleteProduct(deleteProduct) {
         const response = await axios.delete('products/' + deleteProduct.id)
+        deleteProduct.deleted_at = response.data.data.deleted_at
         return response.data.data
     } 
 

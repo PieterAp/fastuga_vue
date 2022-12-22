@@ -2,6 +2,9 @@
 import { ref, watch, computed, onMounted, inject } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import OrderDetail from './OrderDetail.vue';
+import { useUserStore } from "../../stores/user.js"
+
+const userStore = useUserStore()
 
 const router = useRouter()
 const axios = inject('axios')
@@ -11,7 +14,7 @@ let originalValueStr = ''
 const loadOrder = (id) => {
   originalValueStr = ''
   errors.value = null
-    axios.get('orders/' + id)
+    axios.get('customers/' + userStore.customerId + '/orders/' + id)
       .then((response) => {
         order.value = response.data.data
         originalValueStr = dataAsString()

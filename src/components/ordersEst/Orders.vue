@@ -2,19 +2,22 @@
 import { ref, computed, onMounted ,inject} from 'vue'
 import OrderTable from "./OrdersTable.vue"
 import { useOrdersStore } from "../../stores/orders.js"
+import { useUserStore } from "../../stores/user.js"
 import {useRouter } from "vue-router";
 const router = useRouter()
 
 const ordersStore = useOrdersStore()
+const userStore = useUserStore()
 const toast = inject("toast")
 
 const loadOrders = () => {
     ordersStore.loadOrdersF()
+
     .catch((error) => {
       console.log(error)
     })
+    
 }
-
 
 const orders = computed(()=>{
     return ordersStore.getOrdersFilter()
@@ -23,7 +26,7 @@ const orders = computed(()=>{
 
 
 const editOrder = (order) => {
-    router.push({ name: 'Order', params: { id: order.id } })
+    router.push({ name: 'MyordersD', params: { id1: userStore.customerId , id: order.id,  } })
   }
 
 onMounted(() => {

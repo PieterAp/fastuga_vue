@@ -45,7 +45,7 @@ const deleteClick = (product) => {
           </button>
         </td>
         <td v-if="product.deleted_at" >
-          <button class="btn btn-xs btn-light" @click="deleteClick(product)">
+          <button class="btn btn-xs btn-light">
             <i class="bi bi-xs bi-check-square-fill"></i>
           </button>
         </td>
@@ -64,5 +64,6 @@ button {
 
 .completed {
   color: red;
+  text-decoration: line-through
 }
 </style>

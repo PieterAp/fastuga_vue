@@ -22,6 +22,10 @@ export const useUserStore = defineStore('user', () => {
         return user.value?.id ?? -1
     })
 
+    const customerId = computed(() => {
+        return user.value?.customer_id ?? -1
+    })
+
     async function blockUser(userBlocked) {
         await axios.put('users/' + userBlocked.id, { blocked: !userBlocked.blocked })
             .then((response) => {
@@ -197,5 +201,5 @@ export const useUserStore = defineStore('user', () => {
         return response.data.data
     }
 
-    return { user, userId, userPhotoUrl, loadUser, login, register, changedPassword, logout, restoreToken, blockUser, deleteUser }
+    return { user, userId, customerId, userPhotoUrl, loadUser, login, register, changedPassword, logout, restoreToken, blockUser, deleteUser }
 })

@@ -65,13 +65,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <div>
   <form class="row g-3 needs-validation" novalidate @submit.prevent="save">
-    <hr />
+    <h3 class="mt-5 mb-3">{{ "Order #" + editingOrder.id }}</h3>
     <div class=" flex-wrap justify-content-between">
-      <label class="col-sm-2 col-form-label">Order Number</label>
-      <div class="col-sm-10">
-        <input disabled  type="text" class="form-control" id="name" placeholder="Id" v-model="editingOrder.id" />
-      </div>
       <label class="col-sm-2 col-form-label">Date</label>
       <div class="col-sm-10">
         <input disabled  type="text" class="form-control" id="name" placeholder="Date" v-model="editingOrder.date" />
@@ -79,7 +76,18 @@ onMounted(() => {
       <label class="col-sm-2 col-form-label">Status</label>
       <div class="col-sm-10">
         <input disabled type="text" class="form-control" id="name" placeholder="Status" v-model="editingOrder.status"  />
-        
+      </div>
+      <label class="col-sm-2 col-form-label">Total Paid</label>
+      <div class="col-sm-10">
+        <input disabled type="text" class="form-control" id="name" placeholder="Total Paid" v-model="editingOrder.total_paid"  />
+      </div>
+      <label class="col-sm-2 col-form-label">Points Gained</label>
+      <div class="col-sm-10">
+        <input disabled type="text" class="form-control" id="name" placeholder="Points Gained" v-model="editingOrder.points_gained"  />
+      </div>
+      <label class="col-sm-2 col-form-label">Points Used to Pay</label>
+      <div class="col-sm-10">
+        <input disabled type="text" class="form-control" id="name" placeholder="Points Used to Pay" v-model="editingOrder.points_used_to_pay"  />
       </div>
       <label class="col-sm-2 col-form-label">Payment Type</label>
       <div class="col-sm-10">
@@ -102,7 +110,8 @@ onMounted(() => {
     </thead>
     <tbody> 
       <tr
-        v-for="orderItem in order_items?.filter(t => t.order_id==editingOrder.id)"
+      
+        v-for="orderItem in order_items"
         :key="orderItem.id">
         <td>{{ orderItem.product_name }}</td>
         <td>{{ orderItem.price }}</td>
@@ -118,6 +127,7 @@ onMounted(() => {
                       || orderItem.status == "W" ? orderItem.status = "Waiting"
                 : ""
           }}</td>
+        
       </tr>
       
     </tbody>
@@ -125,5 +135,5 @@ onMounted(() => {
   <div class="mb-3 d-flex justify-content-end">
       <button type="button" class="btn btn-dark px-5" @click="cancel">Cancel</button>
   </div>
- 
+  </div>
 </template>
