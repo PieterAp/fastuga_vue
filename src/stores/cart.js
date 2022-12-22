@@ -5,10 +5,10 @@ import { useUserStore } from "./user.js"
 
 export const useCartStore = defineStore('cart', () => {
     const items = ref([])
+    const orderReady = ref(null)
     const userStore = useUserStore()
     const axiosIj = inject('axios')
     const socket = inject("socket")
-
     const totalItems = computed(() => {
         return items.value.length
     })
@@ -73,10 +73,7 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     async function createOrderItems(order) {
-
         let i = 1
-        let orderReady = true
-
         items.value.forEach(async item => {
 
             let formData = new FormData()
@@ -93,24 +90,31 @@ export const useCartStore = defineStore('cart', () => {
                 socket.emit('newItem', response.data.data)
             }
 
-            const orderItemsResponse = await axiosIj.get('orders/' + response.data.data.order_id + '/ordersItems')
+            checkOrderItems(response.data.data)
+                .then((ordersItems) => {
+                    let orderReady = true
 
-            let orderItems = orderItemsResponse.data.data
-            orderReady = true
+                    ordersItems.forEach(orderItem => {
+                        if (orderItem.status != "R") {
+                            orderReady = false
+                        }
+                    });
 
-            orderItems.forEach(orderItem => {
-                if (orderItem.status != "R") {
-                    orderReady = false
-                }
-            });
-
+                    if (orderReady) {
+                        orderReadyUpdate(order)
+                    }
+                })
         })
+    }
 
-        if (orderReady) {
-            const orderResponse = await axiosIj.put('orders/' + order.id, { status: 'R' })
-            socket.emit('orderReady', orderResponse.data.data)
-        }
+    async function checkOrderItems(order) {
+        const response = await axiosIj.get('orders/' + order.order_id + '/ordersItems')
+        return response.data.data
+    }
 
+    async function orderReadyUpdate(order) {
+        const orderResponse = await axiosIj.put('orders/' + order.id, { status: 'R' })
+        socket.emit('orderReady', orderResponse.data.data)
     }
 
     function insertItem(newItem) {
