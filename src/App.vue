@@ -35,7 +35,8 @@ const clickMenuOption = () => {
 <template>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top flex-md-nowrap p-0 shadow">
     <div class="container-fluid">
-      <router-link class="navbar-brand col-md-3 col-lg-2 me-0 px-3" :to="{ name: 'Dashboard' }" @click="clickMenuOption">
+      <router-link class="navbar-brand col-md-3 col-lg-2 me-0 px-3" :to="{ name: 'Dashboard' }"
+        @click="clickMenuOption">
         <img src="@/assets/fastuga_logo.png" alt="" width="40" height="34" class="d-inline-block align-text-top" />
         Fastuga
       </router-link>
@@ -47,17 +48,17 @@ const clickMenuOption = () => {
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link class="nav-link" :class="{ active: $route.name === 'ShoppingCart' }" :to="{ name: 'ShoppingCart' }"
-              @click="clickMenuOption">
+            <router-link class="nav-link" :class="{ active: $route.name === 'ShoppingCart' }"
+              :to="{ name: 'ShoppingCart' }" @click="clickMenuOption">
               <button type="button" class="btn btn-primary">
                 <i class="bi bi-cart"></i>
-                {{cartStore?.totalItems}}
+                {{ cartStore?.totalItems }}
               </button>
             </router-link>
           </li>
-          <li v-show="userStore.user?.type=='C'" class="nav-item" style="display: flex; align-items: center;">
+          <li v-show="userStore.user?.type == 'C'" class="nav-item" style="display: flex; align-items: center;">
             <i class="nav-link">
-                Points: {{pointsStore?.totalPoints}}
+              Points: {{ pointsStore?.totalPoints }}
             </i>
           </li>
           <li class="nav-item" v-show="!userStore.user">
@@ -145,45 +146,46 @@ const clickMenuOption = () => {
             </li>
             <li class="nav-item" v-show="userStore.user?.type == 'C'">
               <hr>
-              <router-link class="dropdown-item" :class="{ active: $route.name == 'myOrders' && $route.params.id == userStore.customerId }"
-                      :to="{ name: 'myOrders', params: { id: userStore.customerId } }" @click="clickMenuOption">
-                      <i class="bi bi-card-checklist"></i>My Orders
-                    </router-link>
+              <router-link class="nav-link"
+                :class="{ active: $route.name == 'myOrders' && $route.params.id == userStore.customerId }"
+                :to="{ name: 'myOrders', params: { id: userStore.customerId } }" @click="clickMenuOption">
+                <i class="bi bi-card-checklist"></i>My Orders
+              </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+            <li class="nav-item" v-show="userStore.user?.type == 'EM'">
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Products' }" :to="{ name: 'Products' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <i class="bi bi-list-ul"></i>
                 Products
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+            <li class="nav-item" v-show="userStore.user?.type == 'EM'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Users' }" :to="{ name: 'Users' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <i class="bi bi-list-ul"></i>
                 Users
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user?.type=='EM'">
+            <li class="nav-item" v-show="userStore.user?.type == 'EM'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Orders' }" :to="{ name: 'Orders' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <i class="bi bi-list-ul"></i>
                 Orders
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type != 'C'">
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Board' }" :to="{ name: 'Board' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <i class="bi bi-list-ul"></i>
                 Public Board
               </router-link>
             </li>
-            <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
+            <li class="nav-item" v-show="userStore.user && userStore.user?.type != 'C'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Kitchen' }" :to="{ name: 'Kitchen' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <i class="bi bi-list-ul"></i>
                 Kitchen
               </router-link>
             </li>
@@ -193,14 +195,19 @@ const clickMenuOption = () => {
               <span>User</span>
             </h6>
             <ul class="nav flex-column mb-2">
-              <li class="nav-item" v-show="!userStore.user">
-                <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
-                  @click="clickMenuOption">
+              <li class="nav-item">
+                <router-link class="nav-link" :class="{ active: $route.name === 'ShoppingCart' }"
+                  :to="{ name: 'ShoppingCart' }" @click="clickMenuOption">
                   <button type="button" class="btn btn-primary">
                     <i class="bi bi-cart"></i>
-                    {{ 0 }}
+                    {{ cartStore?.totalItems }}
                   </button>
                 </router-link>
+              </li>
+              <li v-show="userStore.user?.type == 'C'" class="nav-item" style="display: flex; align-items: center;">
+                <i class="nav-link">
+                  Points: {{ pointsStore?.totalPoints }}
+                </i>
               </li>
               <li class="nav-item" v-show="!userStore.user">
                 <router-link class="nav-link" :class="{ active: $route.name === 'Register' }" :to="{ name: 'Register' }"
@@ -220,7 +227,7 @@ const clickMenuOption = () => {
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button"
                   data-bs-toggle="dropdown" aria-expanded="false">
                   <img :src="userStore.userPhotoUrl" class="rounded-circle z-depth-0 avatar-img" alt="avatar image" />
-                  <span class="avatar-text">User Name</span>
+                  <span class="avatar-text">{{ userStore.user?.name ?? "Anonymous" }}</span>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
                   <li>
@@ -242,7 +249,7 @@ const clickMenuOption = () => {
                   </li>
                   <li>
                     <a class="dropdown-item" @click.prevent="logout">
-                      <i  class="bi bi-arrow-right"></i>Logout
+                      <i class="bi bi-arrow-right"></i>Logout
                     </a>
                   </li>
                 </ul>
