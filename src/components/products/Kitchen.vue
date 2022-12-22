@@ -134,6 +134,10 @@ onMounted(() => {
     }
   })
 
+  socket.on('orderCancelled', (orderTicketNumber) => {
+    loadHotDishes()
+    toast.error(`Order #${orderTicketNumber} has been canceled!`)
+  })
 })
 
 </script>
