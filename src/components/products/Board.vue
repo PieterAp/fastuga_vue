@@ -15,7 +15,7 @@ const ordersStore = useOrdersStore()
 
 async function loadTickets() {
   try {
-    const response = await axios.get('orders')
+    const response = await axios.get('orders/tickets')
     orders.value = response.data.data
   } catch (error) {
     throw error

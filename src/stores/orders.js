@@ -14,7 +14,7 @@ export const useOrdersStore = defineStore('order', () => {
   
     async function loadOrders() {
         try {
-            const response = await axios.get('orders')
+            const response = await axios.get('orders/active')
             orders.value = response.data.data
         } catch (error) {
             clearUser()
