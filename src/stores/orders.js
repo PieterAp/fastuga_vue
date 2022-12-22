@@ -82,12 +82,15 @@ export const useOrdersStore = defineStore('order', () => {
             const responseOrders = await axios.put('orders/' + order.id, { status: 'C'})
             const responseUser = await axios.get('customers/' + responseOrders.data.data.customer_id)
 
-            const updatedPoints =  responseUser.data.data.points + responseOrders.data.data.points_used_to_pay - responseOrders.data.data.points_gained 
+            const points_used_to_pay = responseOrders.data.data.points_used_to_pay
+            const points_gained = responseOrders.data.data.points_gained
+
+            const updatedPoints =  responseUser.data.data.points + points_used_to_pay -  points_gained
             await axios.put('customers/' + responseOrders.data.data.customer_id, { points: updatedPoints})
             
             cartStore.refundPayment(responseOrders.data.data.payment_type, responseOrders.data.data.payment_reference, responseOrders.data.data.total_paid)
 
-            socket.emit('orderCancelled', responseOrders.data.data.customer_id, updatedPoints)
+            socket.emit('orderCancelled', responseUser.data.data.user_id, updatedPoints,responseOrders.data.data.ticket_number)
             return true
         } catch (error) {
             throw error

@@ -166,10 +166,12 @@ export const useUserStore = defineStore('user', () => {
             socket.on('updateItem', (newItem) => {               
                 toast.info("Dish " + newItem.product_name + " from ticket #" + newItem.order_ticket_number + " is now assigned to " + newItem.preparation_by)
             })
-            socket.on('orderCancelled', (updatedPoints) => {
-                toast.error('Your order has been canceled!')
-                user.value.points = updatedPoints
-                toast.info(`Payment and ${updatedPoints} points have been refunded!`)
+            socket.on('orderCancelled', (userID, updatedPoints) => {
+                if (user.value?.id == userID) {
+                    toast.error('Your order has been canceled!')
+                    user.value.points = updatedPoints
+                    toast.info(`Payment and ${updatedPoints} points have been refunded!`)
+                }
             })
             return true
         }
