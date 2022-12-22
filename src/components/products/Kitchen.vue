@@ -155,7 +155,7 @@ onMounted(() => {
 
   <div class="d-flex justify-content-between">
     <div class="mx-2">
-      <h3 class="mt-4">Hot Dishes</h3>
+      <h3 class="mt-4">Kitchen</h3>
     </div>
   </div>
   <hr>
