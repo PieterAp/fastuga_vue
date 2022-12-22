@@ -8,9 +8,16 @@ const axios = inject('axios')
 const toast = inject("toast")
 const cartStore = useCartStore()
 const products = ref(null)
+let productType = null
 
 const props = defineProps({
   type: {
+    type: String
+  },
+  pageTitle: {
+    type: String
+  },
+  icon: {
     type: String
   },
 })
@@ -45,7 +52,12 @@ onMounted(() => {
 <template>
   <div class="d-flex justify-content-between">
     <div class="mx-2">
-      <h3 class="mt-4">Products</h3>
+      <h3 class="mt-4">
+        <span class="img-frame">
+          <img :src="icon" class="img-fluid-title" :class="{ 'icon-active': $route.name === 'Drinks' }"/>
+        </span>
+        {{ pageTitle }}
+      </h3>
     </div>
   </div>
   <hr>
@@ -86,5 +98,9 @@ onMounted(() => {
 
 .btn-addprj {
   margin-top: 1.85rem;
+}
+
+.img-fluid-title {
+  filter: invert(0%) sepia(89%) saturate(7444%) hue-rotate(190deg) brightness(115%) contrast(100%);
 }
 </style>

@@ -118,57 +118,74 @@ const clickMenuOption = () => {
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'HotDishes' }" :to="{ name: 'HotDishes' }"
                 @click="clickMenuOption">
-                <i class="bi bi-fire"></i>
+                <span class="img-frame">
+                  <img src="..\src\assets\bowl-hot.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'HotDishes' }"/>
+                </span>
                 Hot Dishes
               </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'ColdDishes' }"
                 :to="{ name: 'ColdDishes' }" @click="clickMenuOption">
-                <i class="bi bi-files"></i>
+                <span class="img-frame">
+                  <img src="..\src\assets\salad.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'ColdDishes' }"/>
+                </span>
                 Cold Dishes
               </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'Drinks' }" :to="{ name: 'Drinks' }"
                 @click="clickMenuOption">
-                <i class="bi bi-cup-straw"></i>
+                <span class="img-frame">
+                  <img src="..\src\assets\wine-glass.svg" class="img-fluid-extra-small" :class="{ 'icon-active': $route.name === 'Drinks' }"/>
+                </span>
                 Drinks
               </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" :class="{ active: $route.name === 'Deserts' }" :to="{ name: 'Deserts' }"
                 @click="clickMenuOption">
-                <i class="bi bi-cup-straw"></i>
+                <span class="img-frame">
+                  <img src="..\src\assets\cake-slice.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Deserts' }"/>
+                </span>
                 Desserts
               </router-link>
             </li>
             <li class="nav-item" v-show="userStore.user?.type == 'C'">
               <hr>
-              <router-link class="dropdown-item" :class="{ active: $route.name == 'myOrders' && $route.params.id == userStore.customerId }"
+              <router-link class="nav-link" :class="{ active: $route.name == 'myOrders' && $route.params.id == userStore.customerId }"
                       :to="{ name: 'myOrders', params: { id: userStore.customerId } }" @click="clickMenuOption">
-                      <i class="bi bi-card-checklist"></i>My Orders
+                      <span class="img-frame">
+                        <img src="..\src\assets\ballot-check.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'myOrders' }"/>
+                    </span>   
+                    My Orders
                     </router-link>
             </li>
             <li class="nav-item" v-show="userStore.user?.type=='EM'">
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Products' }" :to="{ name: 'Products' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <span class="img-frame">
+                  <img src="..\src\assets\rectangle-vertical-history.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Products' }"/>
+                </span>                            
                 Products
               </router-link>
             </li>
             <li class="nav-item" v-show="userStore.user?.type=='EM'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Users' }" :to="{ name: 'Users' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <span class="img-frame">
+                  <img src="..\src\assets\users.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Users' }"/>
+                </span>                                      
                 Users
               </router-link>
             </li>
             <li class="nav-item" v-show="userStore.user?.type=='EM'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Orders' }" :to="{ name: 'Orders' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <span class="img-frame">
+                  <img src="..\src\assets\list.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Orders' }"/>
+                </span>          
                 Orders
               </router-link>
             </li>
@@ -176,14 +193,18 @@ const clickMenuOption = () => {
               <hr>
               <router-link class="nav-link" :class="{ active: $route.name === 'Board' }" :to="{ name: 'Board' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <span class="img-frame">
+                  <img src="..\src\assets\message-check.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Board' }"/>
+                </span>                                
                 Public Board
               </router-link>
             </li>
             <li class="nav-item" v-show="userStore.user && userStore.user?.type!='C'">
               <router-link class="nav-link" :class="{ active: $route.name === 'Kitchen' }" :to="{ name: 'Kitchen' }"
                 @click="clickMenuOption">
-                <i class="bi bi-list-ul"></i>                                   
+                <span class="img-frame">
+                  <img src="..\src\assets\hat-chef.svg" class="img-fluid-small" :class="{ 'icon-active': $route.name === 'Kitchen' }"/>
+                </span>                                         
                 Kitchen
               </router-link>
             </li>
@@ -289,4 +310,28 @@ a {
 #sidebarMenu {
   overflow-y: auto;
 }
+
+.img-frame{
+  width: 42px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 5px;
+  padding-left: 10px;
+  display: inline-block;
+  }
+
+.img-fluid-small {
+  cursor: pointer;
+  width: 23px;
+}
+
+.img-fluid-extra-small {
+  cursor: pointer;
+  width: 18px;
+}
+
+.icon-active {
+  filter: invert(100%) sepia(0%) saturate(2%) hue-rotate(36deg) brightness(105%) contrast(101%);
+}
+
 </style>

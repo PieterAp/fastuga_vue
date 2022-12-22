@@ -67,28 +67,28 @@ const router = createRouter({
       path: '/menu',
       name: 'HotDishes',
       component: Menu,
-      props: { type: "hot dish", }
+      props: { type: "hot dish", pageTitle: "Hot Dishes", icon: "../../src/assets/bowl-hot.svg" }
     },
 
     {
       path: '/menu',
       name: 'ColdDishes',
       component: Menu,
-      props: { type: "cold dish", }
+      props: { type: "cold dish", pageTitle: "Cold Dishes", icon: "../../src/assets/salad.svg" }
     },
 
     {
       path: '/menu',
       name: 'Drinks',
       component: Menu,
-      props: { type: "drink", }
+      props: { type: "drink", pageTitle: "Drinks", icon: "../../src/assets/wine-glass.svg" }
     },
 
     {
       path: '/menu',
       name: 'Deserts',
       component: Menu,
-      props: { type: "dessert", }
+      props: { type: "dessert", pageTitle: "Desserts", icon: "../../src/assets/cake-slice.svg" }
     },
 
     {
