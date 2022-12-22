@@ -31,7 +31,7 @@ const changePassword = async () => {
 </script>
 
 <template>
-  <form class="row g-3 needs-validation" novalidate @submit.prevent="changePassword">
+  <form class="row g-3 needs-validation" @submit.prevent="changePassword">
     <h3 class="mt-5 mb-3">Change Password</h3>
     <hr>
     <div class="mb-3">
@@ -55,7 +55,7 @@ const changePassword = async () => {
       </div>
     </div>
     <div class="mb-3 d-flex justify-content-center">
-      <button type="button" class="btn btn-primary px-5" @click="changePassword">Change Password</button>
+      <button type="submit" class="btn btn-primary px-5">Change Password</button>
     </div>
   </form>
 </template>
