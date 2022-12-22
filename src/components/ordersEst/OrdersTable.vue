@@ -21,7 +21,7 @@
         <th>Ticket Number</th>
         <th>Status</th>
         <th>Date</th>
-
+        <th class="text-end">View</th>
       </tr>
     </thead>
     <tbody> 
@@ -38,7 +38,7 @@
             <button
               class="btn btn-xs btn-light"
               @click="editClick(order)"          
-            ><i class="bi bi-xs bi-pencil"></i>
+            ><i class="bi bi-eye"></i>
             </button>
           </div>
         </td>
