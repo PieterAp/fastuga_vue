@@ -33,7 +33,7 @@ export const useOrdersStore = defineStore('order', () => {
     }
 
     function getOrders() {
-        return orders
+        return orders.value
     }
 
     const totalOrders = computed(() => {
